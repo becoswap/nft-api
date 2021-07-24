@@ -6,7 +6,7 @@ const NFT = database.models.nft;
 
 
 async function list(ctx) {
-    const query = buildQuery(ctx, ["creator", "owner"], ["updatedAt"])
+    const query = buildQuery(ctx, ["creator", "owner","onSale", "status"], ["updatedAt"])
     const nfts = await NFT.findAndCountAll(query)
     ctx.status = 200;
     ctx.body = nfts;

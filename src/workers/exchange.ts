@@ -49,7 +49,7 @@ async function handleTrade(payload: Payload, transaction) {
         owner: event.args.buyer,
         exchangeAddress: "",
         quoteToken: "",
-        onSale: false,
+        onSale: true,
         price: ""
     })
     await nft.save({ transaction: transaction})

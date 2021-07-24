@@ -94,6 +94,9 @@ module.exports =  (sequelize) => {
             {
                 fields: ['onSale']
             },
+            {
+                fields: ['status']
+            },
         ]
     });
 };
