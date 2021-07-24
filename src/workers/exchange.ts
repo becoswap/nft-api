@@ -49,7 +49,7 @@ async function handleTrade(payload: Payload, transaction) {
         owner: event.args.buyer,
         exchangeAddress: "",
         quoteToken: "",
-        onSale: true,
+        onSale: false,
         price: ""
     })
     await nft.save({ transaction: transaction})
@@ -73,7 +73,6 @@ async function handleAsk(payload: Payload, transaction) {
 
 async function handleCancelSellToken(payload: Payload, transaction) {
     await createEvent(payload, {
-        price: payload.event.args.price.toString(),
     }, transaction)
 
     const nftId = getNftId(payload.bid.nftId, payload.event.args.tokenId.toNumber())
