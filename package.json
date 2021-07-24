@@ -6,6 +6,7 @@
   "license": "ISC",
   "scripts": {
     "start": "ts-node src/app.ts",
+    "start:worker": "ts-node src/worker.ts",
     "dev": "nodemon -e js,ts,json src/app.ts",
     "test": "nyc ava",
     "prettier:check": "prettier --check src/**/*",

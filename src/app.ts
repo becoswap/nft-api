@@ -6,16 +6,8 @@ const body = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const conditional = require('koa-conditional-get');
 const etag = require('koa-etag');
-const join = require('path').join;
-const fs = require('fs');
-
 import sequelize from "./database";
-
-
-
 const router = require('./router');
-const workers = require("./workers")
-
 const app = new Koa();
 
 app.use(conditional());
@@ -46,7 +38,6 @@ async function listen() {
     const port = process.env.PORT || 3000;
     app.listen(port);
     console.log(`> becoswap-nft-api running! (:${port})`);
-    workers.run();
 }
 
 listen();
