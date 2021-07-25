@@ -14,7 +14,7 @@ async function list(ctx) {
 }
 
 async function createOrUpdate(ctx) {
-  let body = ctx.body;
+  let body = ctx.request.body;
   const timestamp = Math.floor(Date.now() / 1000);
 
   if (body.timestamp + EXPIRE_DUATION < timestamp) {

@@ -19,6 +19,6 @@ router.get('/users', users.list);
 router.post('/users', users.createOrUpdate);
 
 // Upload api
-router.post('upload', upload)
+router.post('/upload/signature', upload.signature)
 
 module.exports = router;
