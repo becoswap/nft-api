@@ -11,7 +11,8 @@ const sequelize = new Sequelize(databaseURI);
 const modelDefiners = [
 	require('./models/nft'),
 	require('./models/event'),
-	require('./models/syns_status')
+	require('./models/syns_status'),
+	require('./models/user')
 ];
 
 
