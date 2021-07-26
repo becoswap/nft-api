@@ -5,7 +5,6 @@ const ALLOW_SUFFIX = ['png', 'jpg', 'gif', 'mp3', 'mp4'];
 
 const signature = ctx => {
   const body = ctx.request.body;
-
   if (!ALLOW_SUFFIX.includes(body.suffix)) {
     ctx.status = 400;
     ctx.message = 'invalid suffix';
@@ -17,13 +16,13 @@ const signature = ctx => {
   const url = s3.getSignedUrl('putObject', {
     Bucket: 'becoswap',
     Key: key,
-    Expires: 3600,
+    Expires: 60
   });
 
   ctx.status = 200;
   ctx.body = {
     uploadUrl: url,
-    fileUrl: "https://nfts.cdn.becoswap.com/" + key
+    fileUrl: "https://d3g5bzmawnfi61.cloudfront.net/" + key
   };
 };
 

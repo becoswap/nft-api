@@ -6,6 +6,7 @@ const body = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const conditional = require('koa-conditional-get');
 const etag = require('koa-etag');
+
 import sequelize from './database';
 const router = require('./api/router');
 const app = new Koa();

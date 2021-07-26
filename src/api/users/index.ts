@@ -23,7 +23,13 @@ async function createOrUpdate(ctx) {
     return;
   }
 
-  if (!verify(body.id, body.timestamp, body.sign)) {
+  const msg = [
+    "Becoswap:updateUser",
+    body.name,
+    String(body.timestamp)
+  ]
+  const ok = await verify(body.id, msg.join(":"), body.sign)
+  if (!ok) {
     ctx.status = 400;
     ctx.message = 'invalid signature';
     return;
