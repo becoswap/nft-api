@@ -46,6 +46,7 @@ module.exports = sequelize => {
       },
     },
     {
+      updatedAt: false,
       indexes: [
         {
           fields: ['nftAddress'],

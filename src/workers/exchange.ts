@@ -22,6 +22,8 @@ interface Payload {
 async function createEvent(payload: Payload, metadata, transaction) {
   const event = payload.event;
   const tx = await event.getTransaction();
+  const block = await event.getBlock();
+  const createdAt = new Date(block.timestamp * 1000);
   await Event.create(
     {
       txHash: event.transactionHash,
@@ -32,6 +34,7 @@ async function createEvent(payload: Payload, metadata, transaction) {
       to: tx.to,
       event: event.event,
       metadata: metadata,
+      createdAt: createdAt,
     },
     { transaction }
   );

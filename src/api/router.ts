@@ -5,6 +5,7 @@ import nfts from './nfts';
 import events from './events';
 import users from './users';
 import upload from "./upload"
+import artworks from "./artworks"
 
 const router = new Router();
 
@@ -20,5 +21,10 @@ router.post('/users', users.createOrUpdate);
 
 // Upload api
 router.post('/upload/signature', upload.signature)
+
+
+// Artworks apis
+router.get("/artworks/:id", artworks.get)
+router.post("/artworks", artworks.create)
 
 module.exports = router;

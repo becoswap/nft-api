@@ -12,7 +12,8 @@ const modelDefiners = [
 	require('./models/nft'),
 	require('./models/event'),
 	require('./models/syns_status'),
-	require('./models/user')
+	require('./models/user'),
+	require('./models/artwork')
 ];
 
 
