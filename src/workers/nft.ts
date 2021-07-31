@@ -23,7 +23,7 @@ exchangeContracts.forEach(c => {
 });
 
 const NFT = database.models.nft;
-const SyncStatus = database.models.sync_status;
+const Artwork = database.models.artwork;
 
 interface Payload {
   nftType: number;
@@ -31,6 +31,7 @@ interface Payload {
   from: string;
   to: string;
   status: number;
+  contractAddress: string;
 }
 
 const handlerTransfer = async (payload: Payload, transaction) => {
@@ -44,6 +45,21 @@ const handlerTransfer = async (payload: Payload, transaction) => {
 
   if (payload.from == '0x0000000000000000000000000000000000000000') {
     nftData.creator = payload.to;
+    if (payload.nftType != 1) {
+      const contract = new ethers.Contract(payload.contractAddress, erc721ABI, kaiWeb3);
+      const tokenURI = await contract.tokenURI(payload.tokenId);
+      nftData.tokenURI = tokenURI;
+      if (tokenURI.includes('https://api.nft.becoswap.com/artworks/')) {
+        const artworkID = tokenURI.replace('https://api.nft.becoswap.com/artworks/', '');
+        const artwork: any = await Artwork.findByPk(artworkID);
+        if (artwork) {
+          nftData.name = artwork.name;
+          nftData.description = artwork.name;
+          nftData.attributes = artwork.meta;
+          nftData.fileUrl = artwork.fileUrl;
+        }
+      }
+    }
   }
 
   const eContract = exchangeContractByNft[payload.to];
@@ -77,6 +93,7 @@ const syncNftContract = async contractInfo => {
         await handlerTransfer(
           {
             nftType: contractInfo.id,
+            contractAddress: contractInfo.address,
             tokenId: event.args._tokenId.toNumber(),
             from: event.args._from,
             to: event.args._to,

@@ -24,7 +24,7 @@ module.exports = sequelize => {
     },
     introduction: {
       allowNull: true,
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     website: {
       allowNull: true,
