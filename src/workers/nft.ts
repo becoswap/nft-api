@@ -9,6 +9,9 @@ import { getNftId } from '../utils/nft';
 import exchangeContracts from '../data/exchangeContracts';
 import { syncContract } from '../utils/sync_contract';
 
+const zeroAddr = '0x0000000000000000000000000000000000000000';
+const ArtworkBaseURI = 'https://api.nft.becoswap.com/artworks/';
+
 function getErc721Abi(erctype) {
   if (erctype == 'erc721-duy') {
     return erc721DuyABI;
@@ -34,7 +37,23 @@ interface Payload {
   contractAddress: string;
 }
 
-const handlerTransfer = async (payload: Payload, transaction) => {
+async function useTokenMeta(nft, contractAddr, tokenId) {
+  const contract = new ethers.Contract(contractAddr, erc721ABI, kaiWeb3);
+  const tokenURI = await contract.tokenURI(tokenId);
+  nft.tokenUrl = tokenURI;
+  if (tokenURI && tokenURI.includes(ArtworkBaseURI)) {
+    const artworkID = tokenURI.replace(ArtworkBaseURI, '');
+    const artwork: any = await Artwork.findByPk(artworkID);
+    if (artwork) {
+      nft.name = artwork.name;
+      nft.description = artwork.name;
+      nft.attributes = artwork.meta;
+      nft.fileUrl = artwork.fileUrl;
+    }
+  }
+}
+
+const handleTransfer = async (payload: Payload, transaction) => {
   let nftData: any = {
     id: getNftId(payload.nftType, payload.tokenId),
     nftType: payload.nftType,
@@ -43,22 +62,10 @@ const handlerTransfer = async (payload: Payload, transaction) => {
     onSale: false,
   };
 
-  if (payload.from == '0x0000000000000000000000000000000000000000') {
+  if (payload.from == zeroAddr) {
     nftData.creator = payload.to;
     if (payload.nftType != 1) {
-      const contract = new ethers.Contract(payload.contractAddress, erc721ABI, kaiWeb3);
-      const tokenURI = await contract.tokenURI(payload.tokenId);
-      nftData.tokenURI = tokenURI;
-      if (tokenURI.includes('https://api.nft.becoswap.com/artworks/')) {
-        const artworkID = tokenURI.replace('https://api.nft.becoswap.com/artworks/', '');
-        const artwork: any = await Artwork.findByPk(artworkID);
-        if (artwork) {
-          nftData.name = artwork.name;
-          nftData.description = artwork.name;
-          nftData.attributes = artwork.meta;
-          nftData.fileUrl = artwork.fileUrl;
-        }
-      }
+      await useTokenMeta(nftData, payload.contractAddress, payload.tokenId);
     }
   }
 
@@ -90,7 +97,7 @@ const syncNftContract = async contractInfo => {
       );
       const events = await contract.queryFilter(contract.filters.Transfer(), startBlock, endBlock);
       for (const event of events) {
-        await handlerTransfer(
+        await handleTransfer(
           {
             nftType: contractInfo.id,
             contractAddress: contractInfo.address,
