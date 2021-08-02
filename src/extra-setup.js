@@ -1,7 +1,11 @@
 
 export default (sequelize) =>{
-	// const { instrument, orchestra } = sequelize.models;
+	const { user, nft } = sequelize.models;
 
-	// orchestra.hasMany(instrument);
-	// instrument.belongsTo(orchestra);
+	user.hasMany(nft, {
+		foreignKey: 'owner'
+	});
+	nft.belongsTo(user, {
+		foreignKey: 'owner'
+	});
 }
