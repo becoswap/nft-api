@@ -129,8 +129,6 @@ async function handleCancelBidToken(payload: Payload, transaction) {
   );
 }
 
-const EVENT_NAMES = ['Trade', 'Ask', 'CancelSellToken', 'Bid', 'CancelBidToken'];
-
 const handlers = {
   Trade: handleTrade,
   Ask: handleAsk,
@@ -142,10 +140,10 @@ const handlers = {
 const syncBidContract = async data => {
   syncContract(data.address, data.startBlock, async (t, fromBlock, toBlock) => {
     const contract = new ethers.Contract(data.address, bidABI, kaiWeb3);
-    for (const eventName of EVENT_NAMES) {
-      const events = await contract.queryFilter(contract.filters[eventName](), fromBlock, toBlock);
-      for (const event of events) {
-        await handlers[eventName](
+    const events = await contract.queryFilter({}, fromBlock, toBlock);
+    for (const event of events) {
+      if (handlers[event.event]) {
+        await handlers[event.event](
           {
             event: event,
             bid: data,
