@@ -41,7 +41,7 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
       await t.commit();
       startBlock = endBlock + 1;
     } catch (err) {
-      console.log('sync contract ' + contractAddress + ' err: ', err);
+      console.error('sync contract ' + contractAddress + ' err: ', err);
       await t.rollback();
       await sleep(10000);
     }

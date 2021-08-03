@@ -55,6 +55,9 @@ async function handleTrade(payload: Payload, transaction) {
 
   const nftId = getNftId(payload.bid.nftId, event.args.tokenId.toNumber());
   const nft = await Nft.findByPk(nftId);
+  if (!nft) {
+    throw Error('nft not found');
+  }
   nft.setAttributes({
     owner: event.args.buyer,
     exchangeAddress: '',
@@ -75,7 +78,10 @@ async function handleAsk(payload: Payload, transaction) {
   );
 
   const nftId = getNftId(payload.bid.nftId, payload.event.args.tokenId.toNumber());
-  const nft = await Nft.findByPk(nftId);
+  const nft = await Nft.findByPk(nftId, { transaction: transaction });
+  if (!nft) {
+    throw Error('nft not found');
+  }
   nft.setAttributes({
     price: payload.event.args.price.toString(),
     exchangeAddress: payload.bid.address,
@@ -89,7 +95,10 @@ async function handleCancelSellToken(payload: Payload, transaction) {
   await createEvent(payload, {}, transaction);
 
   const nftId = getNftId(payload.bid.nftId, payload.event.args.tokenId.toNumber());
-  const nft = await Nft.findByPk(nftId);
+  const nft = await Nft.findByPk(nftId, { transaction: transaction });
+  if (!nft) {
+    throw Error('nft not found');
+  }
   nft.setAttributes({
     exchangeAddress: '',
     quoteToken: '',
@@ -111,7 +120,10 @@ async function handleBid(payload: Payload, transaction) {
   );
 
   const nftId = getNftId(payload.bid.nftId, payload.event.args.tokenId.toNumber());
-  const nft = await Nft.findByPk(nftId);
+  const nft = await Nft.findByPk(nftId, { transaction: transaction });
+  if (!nft) {
+    throw Error('nft not found');
+  }
   nft.setAttributes({
     auctionPrice: event.args.price.toString(),
   });

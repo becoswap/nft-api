@@ -38,18 +38,22 @@ interface Payload {
 }
 
 async function useTokenMeta(nft, contractAddr, tokenId) {
-  const contract = new ethers.Contract(contractAddr, erc721ABI, kaiWeb3);
-  const tokenURI = await contract.tokenURI(tokenId);
-  nft.tokenUrl = tokenURI;
-  if (tokenURI && tokenURI.includes(ArtworkBaseURI)) {
-    const artworkID = tokenURI.replace(ArtworkBaseURI, '');
-    const artwork: any = await Artwork.findByPk(artworkID);
-    if (artwork) {
-      nft.name = artwork.name;
-      nft.description = artwork.name;
-      nft.attributes = artwork.meta;
-      nft.fileUrl = artwork.fileUrl;
+  try {
+    const contract = new ethers.Contract(contractAddr, erc721ABI, kaiWeb3);
+    const tokenURI = await contract.tokenURI(tokenId);
+    nft.tokenUrl = tokenURI;
+    if (tokenURI && tokenURI.includes(ArtworkBaseURI)) {
+      const artworkID = tokenURI.replace(ArtworkBaseURI, '');
+      const artwork: any = await Artwork.findByPk(artworkID);
+      if (artwork) {
+        nft.name = artwork.name;
+        nft.description = artwork.name;
+        nft.attributes = artwork.meta;
+        nft.fileUrl = artwork.fileUrl;
+      }
     }
+  } catch (err) {
+    console.error('get nft token err', err);
   }
 }
 
@@ -76,12 +80,13 @@ const handleTransfer = async (payload: Payload, transaction) => {
     nftData.exchangeAddress = eContract.address;
     nftData.quoteToken = eContract.quoteAddress;
   }
-
-  const nft = await NFT.findByPk(nftData.id);
+  const nft = await NFT.findByPk(nftData.id, { transaction: transaction });
   if (!nft) {
     return await NFT.create(nftData, { transaction: transaction });
   }
-  nft.set('owner', nftData.onwer);
+  nft.setAttributes({
+    owner: nftData.owner,
+  });
   await nft.save({ transaction: transaction });
 };
 

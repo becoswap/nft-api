@@ -12,7 +12,8 @@ async function list(ctx) {
     include: [
       {
         model: User,
-        attributes: ['name', 'avatar'],
+        attributes: ['name', 'avatar', 'website'],
+        as: 'creatorInfo',
       },
     ],
   });
