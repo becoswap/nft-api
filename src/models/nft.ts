@@ -48,10 +48,6 @@ module.exports = sequelize => {
         allowNull: true,
         type: DataTypes.STRING,
       },
-      fileType: {
-        allowNull: true,
-        type: DataTypes.INTEGER,
-      },
       fileUrl: {
         allowNull: true,
         type: DataTypes.STRING,
