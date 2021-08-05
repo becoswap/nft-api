@@ -56,6 +56,11 @@ module.exports = sequelize => {
         allowNull: true,
         type: DataTypes.STRING,
       },
+      votes: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        default: 0,
+      },
       exchangeAddress: {
         allowNull: true,
         type: DataTypes.STRING,
@@ -95,6 +100,9 @@ module.exports = sequelize => {
         },
         {
           fields: ['status'],
+        },
+        {
+          fields: ['votes'],
         },
       ],
     }

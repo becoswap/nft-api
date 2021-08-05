@@ -36,7 +36,7 @@ async function assertDatabaseConnectionOk() {
 
 async function listen() {
   await assertDatabaseConnectionOk();
-  const port = process.env.PORT || 3002;
+  const port = process.env.PORT || 3000;
   app.listen(port);
   console.log(`> becoswap-nft-api running! (:${port})`);
 }
