@@ -137,6 +137,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "_tokenOwner",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "_votes",
         "type": "uint256"
