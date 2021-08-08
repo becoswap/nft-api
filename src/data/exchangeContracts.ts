@@ -1,15 +1,7 @@
 const exchangeContracts = [
-  // {
-  //   address: '0x9267d5211225528256eBcb2A78ff3d45244c7E9f',
-  //   nftAddress: '0xc80ACe0aC969397F96a8E1c97D21B4759fAFeB1E',
-  //   quoteAddress: '0x2Eddba8b949048861d2272068A94792275A51658',
-  //   nftId: 1,
-  //   startBlock: 3448761,
-  // },
-
   {
-    address: '0x0265704564152F8521C9b7710A5a40A0F1582eFA',
-    nftAddress: '0x67EBe5d2527cbe0E445C36883DA5Fe15789de933',
+    address: '0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1',
+    nftAddress: '0x33144EC3a462b944503549179e6635B2492061F6',
     quoteAddress: '0x2Eddba8b949048861d2272068A94792275A51658',
     nftId: 2,
     startBlock: 3560189,

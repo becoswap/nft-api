@@ -1,7 +1,7 @@
 const voteNFTContracts = [
   {
-    address: '0xecA4C7f165BFC6B3EbFc313c6A175C65d61Fd423',
-    startBlock: 3654932,
+    address: '0x06287b525F5593e2aF375A3552Cbc1e5E3447Ee6',
+    startBlock: 3684881,
   },
 ];
 export default voteNFTContracts;
