@@ -57,6 +57,9 @@ module.exports = sequelize => {
         {
           fields: ['createdAt'],
         },
+        {
+          fields: ['from'],
+        },
       ],
     }
   );
