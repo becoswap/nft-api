@@ -22,7 +22,7 @@ function getErc721Abi(erctype) {
 
 const bidByAddr = {};
 exchangeContracts.forEach(c => {
-  bidByAddr[c.nftId] = c;
+  bidByAddr[c.address] = c;
 });
 
 const NFT = database.models.nft;
