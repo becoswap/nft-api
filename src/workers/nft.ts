@@ -20,9 +20,9 @@ function getErc721Abi(erctype) {
   }
 }
 
-const exchangeContractByNft = {};
+const bidByAddr = {};
 exchangeContracts.forEach(c => {
-  exchangeContractByNft[c.nftId] = c;
+  bidByAddr[c.nftId] = c;
 });
 
 const NFT = database.models.nft;
@@ -74,7 +74,7 @@ const handleTransfer = async (payload: Payload, transaction) => {
     }
   }
 
-  const eContract = exchangeContractByNft[payload.to];
+  const eContract = bidByAddr[payload.to];
   if (!eContract) {
     nftData.owner = payload.to;
   } else {
