@@ -43,7 +43,7 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
     } catch (err) {
       console.error('sync contract ' + contractAddress + ' err: ', err);
       await t.rollback();
-      await sleep(10000);
+      await sleep(20000);
     }
   }
 };

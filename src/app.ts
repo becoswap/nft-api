@@ -6,10 +6,26 @@ const body = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const conditional = require('koa-conditional-get');
 const etag = require('koa-etag');
+require('dotenv').config();
 
 import sequelize from './database';
 const router = require('./api/router');
 const app = new Koa();
+
+// custom 401 handling
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    if (401 == err.status) {
+      ctx.status = 401;
+      ctx.set('WWW-Authenticate', 'Basic');
+      ctx.body = 'cant haz that';
+    } else {
+      throw err;
+    }
+  }
+});
 
 app.use(conditional());
 app.use(etag());
@@ -36,7 +52,7 @@ async function assertDatabaseConnectionOk() {
 
 async function listen() {
   await assertDatabaseConnectionOk();
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3005;
   app.listen(port);
   console.log(`> becoswap-nft-api running! (:${port})`);
 }

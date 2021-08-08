@@ -2,10 +2,21 @@ import { Op } from 'sequelize';
 
 const buildQuery = (ctx, filterFields, orderFields) => {
   let limit = ctx.query.limit || 10;
+
+  if (limit > 1000) {
+    throw Error('limit must be less than 10000');
+  }
+
+  let offset = ctx.query.offset || 0;
+
+  if (ctx.query.page > 1) {
+    offset = limit * (ctx.query.page - 1);
+  }
+
   let query: any = {
     where: {},
-    limit: limit,
-    offset: ctx.query.offset || 0,
+    limit,
+    offset,
   };
 
   if (ctx.query.ids) {

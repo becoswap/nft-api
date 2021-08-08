@@ -25,6 +25,19 @@ async function list(ctx) {
   ctx.body = nfts;
 }
 
+async function update(ctx) {
+  const nft = await NFT.findByPk(ctx.params.id);
+  if (!nft) {
+    ctx.status = 404;
+    ctx.message = 'nft not foud';
+  }
+
+  nft.setAttributes(ctx.request.body);
+  await nft.save();
+  ctx.body = nft;
+}
+
 export default {
   list,
+  update,
 };

@@ -27,8 +27,8 @@ const handleVote = async (e: Event, transaction) => {
   const votes = new BigNumber(e.args.votes.toString()).div(BIG_TEN.pow(18)).toNumber();
 
   const nftId = getNftId(nft.id, e.args.tokenId);
-  const nftRecord: any = await NFT.findByPk(nftId);
-  if (!nftRecord) return;
+  const nftRecord: any = await NFT.findByPk(nftId, { transaction });
+  if (!nftRecord) throw Error('nft not found');
 
   const vote: any = await Vote.findOne({
     where: {

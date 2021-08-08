@@ -1,5 +1,6 @@
 import database from '../../database';
 import crypto from 'crypto';
+import md5 from 'blueimp-md5';
 
 const Artwork = database.models.artwork;
 
@@ -14,12 +15,21 @@ async function get(ctx) {
 }
 
 async function create(ctx) {
-  const id = crypto.randomBytes(16).toString('hex');
   const body = ctx.request.body;
+  const id = md5(
+    JSON.stringify({
+      name: body.name,
+      fileUrl: body.fileUrl,
+      description: body.description,
+      meta: body.metadata,
+    })
+  );
+
   body.id = id;
+
   await Artwork.create(body);
   ctx.body = {
-    tokenURI: 'https://api.nft.becoswap.com/artworks/' + id,
+    tokenURI: 'https://api-nfts.becoswap.com/artworks/' + id,
   };
 }
 

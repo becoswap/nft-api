@@ -64,6 +64,7 @@ const handleTransfer = async (payload: Payload, transaction) => {
     nftId: payload.tokenId,
     status: payload.status,
     onSale: false,
+    votes: 0,
   };
 
   if (payload.from == zeroAddr) {
