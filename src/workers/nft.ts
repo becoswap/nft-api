@@ -10,7 +10,7 @@ import exchangeContracts from '../data/exchangeContracts';
 import { syncContract } from '../utils/sync_contract';
 
 const zeroAddr = '0x0000000000000000000000000000000000000000';
-const ArtworkBaseURI = 'https://api.nft.becoswap.com/artworks/';
+const ArtworkBaseURI = 'https://api-nfts.becoswap.com/artworks/';
 
 function getErc721Abi(erctype) {
   if (erctype == 'erc721-duy') {
