@@ -6,8 +6,10 @@ import applyExtraSetup from './extra-setup';
 // const sequelize = new Sequelize(process.env.DB_CONNECTION_URL);
 var sequelize;
 
+const isProduction = process.env.NODE_ENV == 'production';
+
 if (process.env.POSTGRES_URI) {
-  sequelize = new Sequelize(process.env.POSTGRES_URI);
+  sequelize = new Sequelize(process.env.POSTGRES_URI, { logging: !isProduction });
 } else {
   sequelize = new Sequelize('nfts', null, null, {
     dialect: 'postgres',
@@ -24,7 +26,7 @@ if (process.env.POSTGRES_URI) {
       max: 20,
       idle: 30000,
     },
-    logging: false,
+    logging: !isProduction,
   });
 }
 
