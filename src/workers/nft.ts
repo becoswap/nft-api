@@ -47,7 +47,7 @@ async function useTokenMeta(nft, contractAddr, tokenId) {
       const artwork: any = await Artwork.findByPk(artworkID);
       if (artwork) {
         nft.name = artwork.name;
-        nft.description = artwork.name;
+        nft.description = artwork.description;
         nft.attributes = artwork.meta;
         nft.fileUrl = artwork.fileUrl;
       }
