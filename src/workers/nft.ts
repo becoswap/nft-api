@@ -41,7 +41,6 @@ async function useTokenMeta(nft, contractAddr, tokenId) {
   try {
     const contract = new ethers.Contract(contractAddr, erc721ABI, kaiWeb3);
     const tokenURI = await contract.tokenURI(tokenId);
-    nft.tokenUrl = tokenURI;
     if (tokenURI && tokenURI.includes(ArtworkBaseURI)) {
       const artworkID = tokenURI.replace(ArtworkBaseURI, '');
       const artwork: any = await Artwork.findByPk(artworkID);
@@ -50,6 +49,7 @@ async function useTokenMeta(nft, contractAddr, tokenId) {
         nft.description = artwork.description;
         nft.attributes = artwork.meta;
         nft.fileUrl = artwork.fileUrl;
+        nft.tokenUrl = tokenURI;
       }
     }
   } catch (err) {
@@ -85,9 +85,15 @@ const handleTransfer = async (payload: Payload, transaction) => {
   if (!nft) {
     return await NFT.create(nftData, { transaction: transaction });
   }
-  nft.setAttributes({
+
+  let dataToUpdate = {
     owner: nftData.owner,
-  });
+  };
+  if (payload.nftType != 1 && !nft.tokenUrl) {
+    await useTokenMeta(dataToUpdate, payload.contractAddress, payload.tokenId);
+  }
+
+  nft.setAttributes(dataToUpdate);
   await nft.save({ transaction: transaction });
 };
 
