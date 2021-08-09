@@ -49,16 +49,22 @@ const handleVote = async (e: Event, transaction) => {
       },
       { transaction }
     );
-
-    nftRecord.setAttributes({ votes: votes });
   } else {
     vote.setAttributes({
       votes: vote.votes + votes,
     });
     await vote.save({ transaction });
-    nftRecord.setAttributes({ votes: votes + nftRecord.votes });
   }
 
+  const sumVote = await Vote.sum('votes', {
+    where: {
+      nftType: nft.id,
+      nftId: e.args.tokenId,
+    },
+    transaction,
+  });
+
+  nftRecord.setAttributes({ votes: sumVote });
   return await nftRecord.save({ transaction });
 };
 
