@@ -14,7 +14,7 @@ async function list(ctx) {
 
   if (ctx.query.q) {
     query.where.name = {
-      [Op.like]: `%${ctx.query.q}%`,
+      [Op.iLike]: `%${ctx.query.q}%`,
     };
   }
 
