@@ -9,7 +9,7 @@ async function list(ctx) {
   const query = buildQuery(
     ctx,
     ['creator', 'owner', 'onSale', 'status', 'nftType'],
-    ['updatedAt', 'votes', 'price']
+    ['updatedAt', 'votes', 'price', 'createdAt']
   );
 
   if (ctx.query.q) {
