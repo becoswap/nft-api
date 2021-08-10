@@ -53,7 +53,11 @@ async function useTokenMeta(nft, contractAddr, tokenId) {
       }
     }
   } catch (err) {
-    console.error('get nft token err', err);
+    if (err.code == 'CALL_EXCEPTION') {
+      console.error('get nft token: ', contractAddr, ', tokenid: ', tokenId, err.code);
+      return;
+    }
+    throw err;
   }
 }
 
@@ -86,9 +90,16 @@ const handleTransfer = async (payload: Payload, transaction) => {
     return await NFT.create(nftData, { transaction: transaction });
   }
 
-  let dataToUpdate = {
+  let dataToUpdate: any = {
     owner: nftData.owner,
   };
+
+  // burn
+  if (payload.to == zeroAddr) {
+    dataToUpdate.creator = zeroAddr;
+    dataToUpdate.owner = zeroAddr;
+  }
+
   if (payload.nftType != 1 && !nft.tokenUrl) {
     await useTokenMeta(dataToUpdate, payload.contractAddress, payload.tokenId);
   }
