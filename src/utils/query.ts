@@ -26,9 +26,9 @@ const buildQuery = (ctx, filterFields, orderFields) => {
   }
 
   if (ctx.query.orderName && orderFields.includes(ctx.query.orderName)) {
-    let orderBy = 'desc';
+    let orderBy = 'DESC';
     if (ctx.query.orderBy == 'asc') {
-      orderBy = 'asc';
+      orderBy = 'ASC';
     }
 
     query.order = [[ctx.query.orderName, orderBy]];

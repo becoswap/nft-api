@@ -9,8 +9,15 @@ async function list(ctx) {
   const query = buildQuery(
     ctx,
     ['creator', 'owner', 'onSale', 'status', 'nftType'],
-    ['updatedAt', 'votes']
+    ['updatedAt', 'votes', 'price']
   );
+
+  if (ctx.query.q) {
+    query.where.name = {
+      [Op.like]: `%${ctx.query.q}%`,
+    };
+  }
+
   const nfts = await NFT.findAndCountAll({
     ...query,
     include: [
