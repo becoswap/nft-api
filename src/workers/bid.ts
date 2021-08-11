@@ -54,7 +54,7 @@ async function handleTrade(payload: Payload, transaction) {
   );
 
   const nftId = getNftId(payload.bid.nftId, event.args.tokenId.toNumber());
-  const nft = await Nft.findByPk(nftId);
+  const nft = await Nft.findByPk(nftId, { transaction });
   if (!nft) {
     throw Error('nft not found');
   }
