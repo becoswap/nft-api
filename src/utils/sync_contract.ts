@@ -23,7 +23,8 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
         continue;
       }
     } catch (err) {
-      console.log('sync contract ' + contractAddress + ' err: ', err);
+      const d = new Date();
+      console.log(d.toString(), ': sync contract ' + contractAddress + ' err: ', err.message);
       sleep(10000);
       continue;
     }
@@ -42,8 +43,9 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
       await t.commit();
       startBlock = endBlock + 1;
     } catch (err) {
-      console.error('sync contract ' + contractAddress + ' err: ', err.message);
       await t.rollback();
+      const d = new Date();
+      console.error(d.toString(), ': sync contract ' + contractAddress + ' err: ', err.message);
       await sleep(20000);
     }
   }
