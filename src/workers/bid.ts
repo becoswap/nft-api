@@ -3,16 +3,10 @@ import exchangeContracts from '../data/exchangeContracts';
 import bidABI from '../abi/bid.json';
 import { kaiWeb3 } from '../utils/web3';
 import database from '../database';
-import nftContracts from '../data/nftContracts';
 import { getNftId } from '../utils/nft';
 import { syncContract } from '../utils/sync_contract';
 const Event = database.models.event;
 const Nft = database.models.nft;
-
-const nftContractByAddr = {};
-nftContracts.forEach(nft => {
-  nftContractByAddr[nft.address] = nft;
-});
 
 interface Payload {
   event: any;
