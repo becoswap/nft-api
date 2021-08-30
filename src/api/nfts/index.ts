@@ -32,6 +32,28 @@ async function list(ctx) {
   ctx.body = nfts;
 }
 
+async function get(ctx) {
+  const nft = await NFT.findByPk(ctx.params.id);
+  ctx.status = 200;
+  ctx.body = nft;
+}
+
+async function count(ctx) {
+  const query = buildQuery(ctx, ['creator', 'owner', 'onSale', 'status', 'nftType'], []);
+
+  if (ctx.query.q) {
+    query.where.name = {
+      [Op.iLike]: `%${ctx.query.q}%`,
+    };
+  }
+
+  const count = await NFT.count(query);
+  ctx.status = 200;
+  ctx.body = {
+    count,
+  };
+}
+
 async function update(ctx) {
   const nft = await NFT.findByPk(ctx.params.id);
   if (!nft) {
@@ -47,4 +69,6 @@ async function update(ctx) {
 export default {
   list,
   update,
+  count,
+  get,
 };

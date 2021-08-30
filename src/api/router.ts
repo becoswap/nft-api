@@ -20,6 +20,9 @@ function authM() {
 
 // NFTS API -----------------------------
 router.get('/nfts', nfts.list);
+router.get('/nfts/count', nfts.count);
+router.get('/nfts/:id', nfts.get);
+
 router.put('/nfts/:id', authM(), nfts.update);
 
 // NFTs Events API -----------------------------------
