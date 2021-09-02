@@ -5,15 +5,41 @@ import { buildQuery } from '../../utils/query';
 const NFT = database.models.nft;
 const User = database.models.user;
 
-const ALLOW_FILTER_FIELDS = [
-  'creator',
-  'owner',
-  'onSale',
-  'status',
-  'nftType',
-  'attributes.cardId',
-  'attributes.level',
-];
+const ALLOW_FILTER_FIELDS = ['creator', 'owner', 'onSale', 'status', 'nftType'];
+
+function buildQueryRobot(query, ctx) {
+  let rangeFields = ['attributes.level'];
+  for (const field of rangeFields) {
+    if (ctx.query[field]) {
+      const range = ctx.query[field].split(',');
+      if (range.length === 2) {
+        query.where[field] = {
+          [Op.gte]: range[0],
+          [Op.lte]: range[1],
+        };
+      }
+    }
+  }
+  rangeFields = ['attributes.stats.strength', 'attributes.stats.speed', 'attributes.stats.hp'];
+  for (var i = 0; i < rangeFields.length; i++) {
+    const field = rangeFields[i];
+    if (ctx.query[field]) {
+      const range = ctx.query[field].split(',');
+      if (range.length === 2) {
+        query.where['attributes.stats'] = {
+          [i]: {
+            [Op.gte]: range[0],
+            [Op.lte]: range[1],
+          },
+        };
+      }
+    }
+  }
+}
+
+const buildQueryFn = {
+  3: buildQueryRobot,
+};
 
 async function list(ctx) {
   const query = buildQuery(ctx, ALLOW_FILTER_FIELDS, ['updatedAt', 'votes', 'price', 'createdAt']);
@@ -22,6 +48,10 @@ async function list(ctx) {
     query.where.name = {
       [Op.iLike]: `%${ctx.query.q}%`,
     };
+  }
+
+  if (buildQueryFn[ctx.query.nftType]) {
+    buildQueryFn[ctx.query.nftType](query, ctx);
   }
 
   const nfts = await NFT.findAndCountAll({
@@ -51,6 +81,10 @@ async function count(ctx) {
     query.where.name = {
       [Op.iLike]: `%${ctx.query.q}%`,
     };
+  }
+
+  if (buildQueryFn[ctx.query.nftType]) {
+    buildQueryFn[ctx.query.nftType](query, ctx);
   }
 
   const count = await NFT.count(query);
