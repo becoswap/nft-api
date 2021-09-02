@@ -69,11 +69,11 @@ const handleVote = async (e: Event, transaction) => {
 };
 
 const startSync = async contractInfo => {
+  const contract = new ethers.Contract(contractInfo.address, voteNFTABI, kaiWeb3);
   syncContract(
     contractInfo.address,
     contractInfo.startBlock,
     async (transaction, startBlock: number, endBlock: number) => {
-      const contract = new ethers.Contract(contractInfo.address, voteNFTABI, kaiWeb3);
       const events = await contract.queryFilter(contract.filters.Voted(), startBlock, endBlock);
       for (const e of events) {
         await handleVote(e, transaction);

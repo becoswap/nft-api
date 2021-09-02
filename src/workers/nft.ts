@@ -109,15 +109,15 @@ const handleTransfer = async (payload: Payload, transaction) => {
 };
 
 const syncNftContract = async contractInfo => {
+  const contract = new ethers.Contract(
+    contractInfo.address,
+    getErc721Abi(contractInfo.erc721type),
+    kaiWeb3
+  );
   syncContract(
     contractInfo.address,
     contractInfo.startBlock,
     async (transaction, startBlock: number, endBlock: number) => {
-      const contract = new ethers.Contract(
-        contractInfo.address,
-        getErc721Abi(contractInfo.erc721type),
-        kaiWeb3
-      );
       const events = await contract.queryFilter(contract.filters.Transfer(), startBlock, endBlock);
       for (const event of events) {
         await handleTransfer(

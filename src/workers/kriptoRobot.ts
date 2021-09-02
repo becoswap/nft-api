@@ -90,11 +90,11 @@ const hanlders = {
 };
 
 const syncNftContract = async contractInfo => {
+  const contract = new ethers.Contract(contractInfo.address, criptoRobotCoreABI, kaiWeb3);
   syncContract(
     contractInfo.address,
     contractInfo.startBlock,
     async (transaction, startBlock: number, endBlock: number) => {
-      const contract = new ethers.Contract(contractInfo.address, criptoRobotCoreABI, kaiWeb3);
       const events = await contract.queryFilter({}, startBlock, endBlock);
       for (const event of events) {
         if (hanlders[event.event]) {

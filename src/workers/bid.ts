@@ -186,8 +186,8 @@ const handlers = {
 };
 
 const syncBidContract = async data => {
+  const contract = new ethers.Contract(data.address, bidABI, kaiWeb3);
   syncContract(data.address, data.startBlock, async (t, fromBlock, toBlock) => {
-    const contract = new ethers.Contract(data.address, bidABI, kaiWeb3);
     const events = await contract.queryFilter({}, fromBlock, toBlock);
     for (const event of events) {
       if (handlers[event.event]) {
