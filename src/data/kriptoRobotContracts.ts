@@ -1,8 +1,8 @@
 const kriptoRobotContracts = [
   {
     id: 3,
-    address: '0xe0783617a194F931eEC4aE7B5957dd5a1100c08e',
-    startBlock: 2019471,
+    address: '0xd1A55bBD86aA1Ac5ffa5a7316fb1fa1D2bF2429C',
+    startBlock: 2106900,
     neededVerify: false,
   },
 ];

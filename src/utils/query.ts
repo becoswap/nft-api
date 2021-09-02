@@ -35,8 +35,15 @@ const buildQuery = (ctx, filterFields, orderFields) => {
   }
 
   for (var field of filterFields) {
-    if (ctx.query[field]) {
-      query.where[field] = ctx.query[field];
+    if (typeof ctx.query[field] != 'undefined') {
+      const values = ctx.query[field].split(',');
+      if (values.length == 1) {
+        query.where[field] = ctx.query[field];
+      } else {
+        query.where[field] = {
+          [Op.in]: values,
+        };
+      }
     }
   }
   return query;

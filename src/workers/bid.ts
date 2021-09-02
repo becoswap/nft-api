@@ -5,13 +5,49 @@ import { kaiWeb3 } from '../utils/web3';
 import database from '../database';
 import { getNftId } from '../utils/nft';
 import { syncContract } from '../utils/sync_contract';
+import md5 from 'blueimp-md5';
+
 const Event = database.models.event;
 const Nft = database.models.nft;
+const Bid = database.models.bid;
 
 interface Payload {
   event: any;
   bid: any;
 }
+
+function getBidId(payload: Payload) {
+  const args = payload.event.args;
+  const nftId = args.tokenId.toNumber();
+  return md5([nftId, payload.bid.nftId, args.bidder].join(''));
+}
+
+const upsertBid = async (payload: Payload, transaction) => {
+  const args = payload.event.args;
+  const nftId = args.tokenId.toNumber();
+  const id = getBidId(payload);
+  await Bid.upsert(
+    {
+      id: id,
+      nftId: getNftId(payload.bid.nftId, nftId),
+      bidder: args.bidder,
+      price: args.price.toString(),
+    },
+    { transaction }
+  );
+};
+
+const removeBid = async (payload: Payload, transaction) => {
+  const id = getBidId(payload);
+  await Bid.destroy(
+    {
+      where: {
+        id: id,
+      },
+    },
+    { transaction }
+  );
+};
 
 async function createEvent(payload: Payload, metadata, transaction) {
   const event = payload.event;
@@ -60,6 +96,9 @@ async function handleTrade(payload: Payload, transaction) {
     price: '',
   });
   await nft.save({ transaction: transaction });
+
+  payload.event.args.bidder = event.args.buyer;
+  await await removeBid(payload, transaction);
 }
 
 async function handleAsk(payload: Payload, transaction) {
@@ -122,6 +161,8 @@ async function handleBid(payload: Payload, transaction) {
     auctionPrice: event.args.price.toString(),
   });
   await nft.save({ transaction: transaction });
+
+  await upsertBid(payload, transaction);
 }
 
 async function handleCancelBidToken(payload: Payload, transaction) {
@@ -133,6 +174,7 @@ async function handleCancelBidToken(payload: Payload, transaction) {
     },
     transaction
   );
+  await removeBid(payload, transaction);
 }
 
 const handlers = {

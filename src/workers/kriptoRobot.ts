@@ -11,8 +11,25 @@ const zeroAddr = '0x0000000000000000000000000000000000000000';
 
 const NFT = database.models.nft;
 
+function getRobotInfo(args) {
+  const info = args.event.args._robotInfo;
+  return {
+    skinBase: info.skinBase.map(num => num.toString()),
+    stats: info.stats.map(num => num.toString()),
+    items: info.items.map(num => num.toString()),
+    robotGene: info.robotGene,
+    cardId: info.cardId,
+    maxLevel: info.maxLevel,
+    maxItem: info.maxItem,
+    isActive: info.isActive,
+    isCrafted: info.isCrafted,
+    level: info.level,
+  };
+}
+
 const handleCreateRobot = async args => {
   const nftID = args.event.args._robotId.toNumber();
+  const attributes = getRobotInfo(args);
   const createdAt = new Date(args.event.args._createdAt.toNumber() * 1000);
   await NFT.create(
     {
@@ -25,30 +42,17 @@ const handleCreateRobot = async args => {
       status: 1,
       onSale: false,
       createdAt,
-      attributes: {
-        skinBase: args.event.args._skinBase.map(num => num.toString()),
-        stats: args.event.args._stats.map(num => num.toString()),
-        cardType: args.event.args._cardType,
-        maxLevel: args.event.args._maxLevel,
-        maxItem: args.event.args._maxItem,
-        isActive: false,
-        isCrafted: false,
-        level: 1,
-      },
+      attributes,
     },
     { transaction: args.transaction }
   );
 };
 
-const handleUpgradeRobot = async args => {
+const handleUpdateRobot = async args => {
   const nft = await getNft(args);
+  const attributes = getRobotInfo(args);
   nft.setAttributes({
-    attributes: {
-      ...nft.attributes,
-      stats: args.event.args._newStats.map(num => num.toString()),
-      level: args.event.args._newLevel,
-      updatedAt: args.event.args._updatedAt.toNumber(),
-    },
+    attributes,
   });
   await nft.save({ transaction: args.transaction });
 };
@@ -57,41 +61,6 @@ const getNft = args => {
   const robotId = args.event.args._robotId.toNumber();
   const nftID = getNftId(args.id, robotId);
   return NFT.findByPk(nftID, { transaction: args.transaction });
-};
-
-const handleActiveRobot = async args => {
-  const nft = await getNft(args);
-  nft.setAttributes({
-    attributes: {
-      ...nft.attributes,
-      isActive: args.event.args._isActive,
-      activatedAt: args.event.args._activatedAt.toNumber(),
-    },
-  });
-  await nft.save({ transaction: args.transaction });
-};
-
-const handleCraftRobot = async args => {
-  const nft = await getNft(args);
-  nft.setAttributes({
-    attributes: {
-      ...nft.attributes,
-      isCraft: args.event.args._isCraft,
-      craftedAt: args.event.args._craftedAt.toNumber(),
-    },
-  });
-  await nft.save({ transaction: args.transaction });
-};
-
-const handleEquipItem = async args => {
-  const nft = await getNft(args);
-  nft.setAttributes({
-    attributes: {
-      ...nft.attributes,
-      items: args.event.args._items.map(num => num.toString()),
-    },
-  });
-  await nft.save({ transaction: args.transaction });
 };
 
 const handlerTransfer = async args => {
@@ -115,10 +84,7 @@ const handleDestroy = async args => {
 
 const hanlders = {
   CreateRobot: handleCreateRobot,
-  UpgradeRobot: handleUpgradeRobot,
-  ActiveRobot: handleActiveRobot,
-  CraftRobot: handleCraftRobot,
-  EquipItem: handleEquipItem,
+  UpdateRobot: handleUpdateRobot,
   Destroy: handleDestroy,
   Transfer: handlerTransfer,
 };

@@ -5,12 +5,18 @@ import { buildQuery } from '../../utils/query';
 const NFT = database.models.nft;
 const User = database.models.user;
 
+const ALLOW_FILTER_FIELDS = [
+  'creator',
+  'owner',
+  'onSale',
+  'status',
+  'nftType',
+  'attributes.cardId',
+  'attributes.level',
+];
+
 async function list(ctx) {
-  const query = buildQuery(
-    ctx,
-    ['creator', 'owner', 'onSale', 'status', 'nftType'],
-    ['updatedAt', 'votes', 'price', 'createdAt']
-  );
+  const query = buildQuery(ctx, ALLOW_FILTER_FIELDS, ['updatedAt', 'votes', 'price', 'createdAt']);
 
   if (ctx.query.q) {
     query.where.name = {
@@ -39,7 +45,7 @@ async function get(ctx) {
 }
 
 async function count(ctx) {
-  const query = buildQuery(ctx, ['creator', 'owner', 'onSale', 'status', 'nftType'], []);
+  const query = buildQuery(ctx, ALLOW_FILTER_FIELDS, []);
 
   if (ctx.query.q) {
     query.where.name = {

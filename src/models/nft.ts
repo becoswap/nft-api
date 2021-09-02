@@ -104,6 +104,11 @@ module.exports = sequelize => {
         {
           fields: ['votes'],
         },
+        {
+          fields: ['attributes'],
+          using: 'gin',
+          operator: 'jsonb_path_ops',
+        },
       ],
     }
   );

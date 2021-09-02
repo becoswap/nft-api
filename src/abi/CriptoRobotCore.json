@@ -20,31 +20,6 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "_robotId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "_isActive",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_activatedAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "ActiveRobot",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
         "internalType": "address",
         "name": "owner",
         "type": "address"
@@ -100,65 +75,68 @@
         "type": "uint256"
       },
       {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "_isCraft",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_craftedAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "CraftRobot",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "_robotId",
-        "type": "uint256"
-      },
-      {
         "indexed": true,
         "internalType": "address",
         "name": "_owner",
         "type": "address"
       },
       {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "robotGene",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isCrafted",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "cardId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "level",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "maxLevel",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "maxItem",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "items",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "stats",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "skinBase",
+            "type": "uint256[]"
+          }
+        ],
         "indexed": false,
-        "internalType": "uint256[]",
-        "name": "_skinBase",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "_stats",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "_cardType",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "_maxLevel",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "_maxItem",
-        "type": "uint8"
+        "internalType": "struct RobotCore.Robot",
+        "name": "_robotInfo",
+        "type": "tuple"
       },
       {
         "indexed": false,
@@ -187,31 +165,6 @@
       }
     ],
     "name": "Destroy",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "_robotId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "_items",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_updatedAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "EquipItem",
     "type": "event"
   },
   {
@@ -294,22 +247,62 @@
         "type": "uint256"
       },
       {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "robotGene",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isActive",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isCrafted",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint8",
+            "name": "cardId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "level",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "maxLevel",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint8",
+            "name": "maxItem",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "items",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "stats",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "skinBase",
+            "type": "uint256[]"
+          }
+        ],
         "indexed": false,
-        "internalType": "uint256[]",
-        "name": "_oldStats",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256[]",
-        "name": "_newStats",
-        "type": "uint256[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
-        "name": "_newLevel",
-        "type": "uint8"
+        "internalType": "struct RobotCore.Robot",
+        "name": "_robotInfo",
+        "type": "tuple"
       },
       {
         "indexed": false,
@@ -318,7 +311,7 @@
         "type": "uint256"
       }
     ],
-    "name": "UpgradeRobot",
+    "name": "UpdateRobot",
     "type": "event"
   },
   {

@@ -6,6 +6,14 @@ const exchangeContracts = [
     nftId: 2,
     startBlock: 3560189,
   },
+
+  {
+    address: '0xEC7Ca2083CF6d7C25D4E4E91Be3823C73C7Da26C',
+    nftAddress: '0xd1A55bBD86aA1Ac5ffa5a7316fb1fa1D2bF2429C',
+    quoteAddress: '0x3E3029E22C0B9c508f5bb2826e1689EdE77EB9DC',
+    nftId: 3,
+    startBlock: 2119379,
+  },
 ];
 
 export default exchangeContracts;

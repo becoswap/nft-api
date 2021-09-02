@@ -8,6 +8,7 @@ import users from './users';
 import upload from './upload';
 import artworks from './artworks';
 import votes from './votes';
+import bids from './bids';
 
 const router = new Router();
 
@@ -41,5 +42,8 @@ router.post('/artworks', artworks.create);
 
 // Votes apis
 router.get('/votes', votes.list);
+
+// Bids apis
+router.get('/bids', bids.list);
 
 module.exports = router;
