@@ -16,8 +16,7 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
   let lastestBlock = 0;
   while (true) {
     try {
-      lastestBlock = await kaiWeb3.getBlockNumber();
-      lastestBlock = lastestBlock - 1;
+      lastestBlock = (await kaiWeb3.getBlockNumber()) - 1;
       if (lastestBlock < startBlock) {
         sleep(5000);
         continue;

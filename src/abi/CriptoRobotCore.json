@@ -89,11 +89,6 @@
           },
           {
             "internalType": "bool",
-            "name": "isActive",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "isCrafted",
             "type": "bool"
           },
@@ -252,11 +247,6 @@
             "internalType": "address",
             "name": "robotGene",
             "type": "address"
-          },
-          {
-            "internalType": "bool",
-            "name": "isActive",
-            "type": "bool"
           },
           {
             "internalType": "bool",
@@ -608,11 +598,6 @@
         "internalType": "address",
         "name": "robotGene",
         "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isActive",
-        "type": "bool"
       },
       {
         "internalType": "bool",
@@ -1121,11 +1106,6 @@
     "outputs": [
       {
         "internalType": "bool",
-        "name": "isActive",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
         "name": "isCrafted",
         "type": "bool"
       },
@@ -1254,7 +1234,7 @@
         "type": "uint256[]"
       }
     ],
-    "name": "equipItem",
+    "name": "equipItems",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1267,7 +1247,7 @@
         "type": "uint256"
       }
     ],
-    "name": "removeItem",
+    "name": "removeAllItems",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1280,12 +1260,12 @@
         "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "_isActive",
-        "type": "bool"
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
       }
     ],
-    "name": "setActiveRobot",
+    "name": "removeItemByIndex",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1300,6 +1280,40 @@
     ],
     "name": "craftRobot",
     "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "onERC721Received",
+    "outputs": [
+      {
+        "internalType": "bytes4",
+        "name": "",
+        "type": "bytes4"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   }

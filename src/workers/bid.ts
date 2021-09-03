@@ -37,8 +37,10 @@ const upsertBid = async (payload: Payload, transaction) => {
   );
 };
 
-const removeBid = async (payload: Payload, transaction) => {
-  const id = getBidId(payload);
+const removeBid = async (payload: Payload, buyer, transaction) => {
+  const args = payload.event.args;
+  const nftId = args.tokenId.toNumber();
+  const id = md5([nftId, payload.bid.nftId, buyer].join(''));
   await Bid.destroy(
     {
       where: {
@@ -97,8 +99,7 @@ async function handleTrade(payload: Payload, transaction) {
   });
   await nft.save({ transaction: transaction });
 
-  payload.event.args.bidder = event.args.buyer;
-  await await removeBid(payload, transaction);
+  await await removeBid(payload, event.args.buyer, transaction);
 }
 
 async function handleAsk(payload: Payload, transaction) {
@@ -174,7 +175,7 @@ async function handleCancelBidToken(payload: Payload, transaction) {
     },
     transaction
   );
-  await removeBid(payload, transaction);
+  await removeBid(payload, event.args.bidder, transaction);
 }
 
 const handlers = {

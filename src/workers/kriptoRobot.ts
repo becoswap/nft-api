@@ -21,7 +21,6 @@ function getRobotInfo(args) {
     cardId: info.cardId,
     maxLevel: info.maxLevel,
     maxItem: info.maxItem,
-    isActive: info.isActive,
     isCrafted: info.isCrafted,
     level: info.level,
   };
