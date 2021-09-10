@@ -35,6 +35,19 @@ function buildQueryRobot(query, ctx) {
       }
     }
   }
+  const parentKey = 'parentId';
+  if (ctx.query[parentKey]) {
+    query.where.attributes = {
+      [Op.or]: [
+        {
+          sireId: ctx.query[parentKey],
+        },
+        {
+          matronId: ctx.query[parentKey],
+        },
+      ],
+    };
+  }
 }
 
 const buildQueryFn = {
@@ -42,7 +55,15 @@ const buildQueryFn = {
 };
 
 async function list(ctx) {
-  const query = buildQuery(ctx, ALLOW_FILTER_FIELDS, ['updatedAt', 'votes', 'price', 'createdAt']);
+  const allowFields = [
+    ...ALLOW_FILTER_FIELDS,
+    'attributes.sireId',
+    'attributes.classId',
+    'attributes.matronId',
+    'attributes.classId',
+  ];
+
+  const query = buildQuery(ctx, allowFields, ['updatedAt', 'votes', 'price', 'createdAt']);
 
   if (ctx.query.q) {
     query.where.name = {
