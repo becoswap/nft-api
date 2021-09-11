@@ -1,16 +1,58 @@
 import { Op } from 'sequelize';
+import { DEFAULT_LIMIT, MAX_LIMIT } from '../constants';
 
-const buildQuery = (ctx, filterFields, orderFields) => {
-  let limit = ctx.query.limit || 10;
+export const buildWhere = (input, Model) => {
+  let where: any = {};
 
-  if (limit > 1000) {
-    throw Error('limit must be less than 10000');
+  for (var key in input) {
+    const keys = key.split('__');
+    if (keys.length == 2) {
+      if (Op[keys[1]]) {
+        let values = input[key];
+        if (!Array.isArray(values) && ['in', 'notIn'].includes(keys[1])) {
+          values = values.split(',');
+        }
+
+        if (!Model.rawAttributes[keys[0]]) {
+          where.attributes = where.attributes || {};
+          where.attributes = {
+            [keys[0]]: {
+              [Op[keys[1]]]: values,
+            },
+          };
+        } else {
+          where[keys[0]] = {
+            [Op[keys[1]]]: values,
+          };
+        }
+      } else {
+        throw Error('invalid query');
+      }
+    } else {
+      if (!Model.rawAttributes[keys[0]]) {
+        where.attributes = where.attributes || {};
+        where.attributes[keys[0]] = input[key];
+      } else {
+        where[keys[0]] = input[key];
+      }
+    }
+  }
+  return where;
+};
+
+const buildQuery = (ctx, Model) => {
+  const input = Object.assign({}, ctx.query);
+
+  let limit = input.limit || DEFAULT_LIMIT;
+  delete input.limit;
+  if (limit > MAX_LIMIT) {
+    throw Error('limit must be less than ' + MAX_LIMIT);
   }
 
-  let offset = ctx.query.offset || 0;
-
-  if (ctx.query.page > 1) {
-    offset = limit * (ctx.query.page - 1);
+  let offset = input.offset || 0;
+  delete input.offset;
+  if (input.page > 1) {
+    offset = limit * (input.page - 1);
   }
 
   let query: any = {
@@ -19,33 +61,25 @@ const buildQuery = (ctx, filterFields, orderFields) => {
     offset,
   };
 
-  if (ctx.query.ids) {
+  if (input.ids) {
     query.where.id = {
-      [Op.in]: ctx.query.ids.split(','),
+      [Op.in]: input.ids.split(','),
     };
+    delete input.ids;
   }
 
-  if (ctx.query.orderName && orderFields.includes(ctx.query.orderName)) {
+  if (input.orderName) {
     let orderBy = 'DESC';
-    if (ctx.query.orderBy == 'asc') {
+    if (input.orderBy == 'asc') {
       orderBy = 'ASC';
     }
 
-    query.order = [[ctx.query.orderName, orderBy]];
+    query.order = [[input.orderName, orderBy]];
+    delete input.orderBy;
+    delete input.orderName;
   }
 
-  for (var field of filterFields) {
-    if (typeof ctx.query[field] != 'undefined') {
-      const values = ctx.query[field].split(',');
-      if (values.length == 1) {
-        query.where[field] = ctx.query[field];
-      } else {
-        query.where[field] = {
-          [Op.in]: values,
-        };
-      }
-    }
-  }
+  query.where = buildWhere(input, Model);
   return query;
 };
 

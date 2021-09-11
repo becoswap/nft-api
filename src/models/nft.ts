@@ -73,6 +73,7 @@ module.exports = sequelize => {
         allowNull: true,
         type: DataTypes.JSONB,
       },
+
       onSale: {
         allowNull: false,
         default: false,

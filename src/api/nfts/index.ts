@@ -5,76 +5,8 @@ import { buildQuery } from '../../utils/query';
 const NFT = database.models.nft;
 const User = database.models.user;
 
-const ALLOW_FILTER_FIELDS = ['creator', 'owner', 'onSale', 'status', 'nftType'];
-
-function buildQueryRobot(query, ctx) {
-  let rangeFields = ['attributes.level'];
-  for (const field of rangeFields) {
-    if (ctx.query[field]) {
-      const range = ctx.query[field].split(',');
-      if (range.length === 2) {
-        query.where[field] = {
-          [Op.gte]: range[0],
-          [Op.lte]: range[1],
-        };
-      }
-    }
-  }
-  rangeFields = ['attributes.stats.strength', 'attributes.stats.speed', 'attributes.stats.hp'];
-  for (var i = 0; i < rangeFields.length; i++) {
-    const field = rangeFields[i];
-    if (ctx.query[field]) {
-      const range = ctx.query[field].split(',');
-      if (range.length === 2) {
-        query.where['attributes.stats'] = {
-          [i]: {
-            [Op.gte]: range[0],
-            [Op.lte]: range[1],
-          },
-        };
-      }
-    }
-  }
-  const parentKey = 'parentId';
-  if (ctx.query[parentKey]) {
-    query.where.attributes = {
-      [Op.or]: [
-        {
-          sireId: ctx.query[parentKey],
-        },
-        {
-          matronId: ctx.query[parentKey],
-        },
-      ],
-    };
-  }
-}
-
-const buildQueryFn = {
-  3: buildQueryRobot,
-};
-
 async function list(ctx) {
-  const allowFields = [
-    ...ALLOW_FILTER_FIELDS,
-    'attributes.sireId',
-    'attributes.classId',
-    'attributes.matronId',
-    'attributes.classId',
-  ];
-
-  const query = buildQuery(ctx, allowFields, ['updatedAt', 'votes', 'price', 'createdAt']);
-
-  if (ctx.query.q) {
-    query.where.name = {
-      [Op.iLike]: `%${ctx.query.q}%`,
-    };
-  }
-
-  if (buildQueryFn[ctx.query.nftType]) {
-    buildQueryFn[ctx.query.nftType](query, ctx);
-  }
-
+  const query: any = buildQuery(ctx, NFT);
   const nfts = await NFT.findAndCountAll({
     ...query,
     include: [
@@ -96,16 +28,12 @@ async function get(ctx) {
 }
 
 async function count(ctx) {
-  const query = buildQuery(ctx, ALLOW_FILTER_FIELDS, []);
+  const query = buildQuery(ctx, NFT);
 
   if (ctx.query.q) {
     query.where.name = {
       [Op.iLike]: `%${ctx.query.q}%`,
     };
-  }
-
-  if (buildQueryFn[ctx.query.nftType]) {
-    buildQueryFn[ctx.query.nftType](query, ctx);
   }
 
   const count = await NFT.count(query);

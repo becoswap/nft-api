@@ -17,25 +17,50 @@ function getRobotInfo(payload) {
   const args = payload.event.args;
 
   const geneDecoded = decode(new BigNumber(args._genes.toString()));
-  return {
-    classId: geneDecoded.classId,
-    skinBase: geneDecoded.skinBase,
-    stats: geneDecoded.stats,
-    items: [],
-    genes: args._genes.toString(),
-    cardId: geneDecoded.cardId,
-    level: 0,
-    matronId: args.matronId.toString(),
+  let image: string = 'https://images.kriptogaming.com';
+  if (geneDecoded.classId == 0) {
+    image =
+      image + `/robot/${geneDecoded.cardId}-${geneDecoded.skinBase.slice(0, 9).join('-')}.png`;
+  } else {
+    image =
+      image + `/monster/${geneDecoded.cardId}-${geneDecoded.skinBase.slice(0, 6).join('-')}.png`;
+  }
+
+  const attributes = {
+    classId: String(geneDecoded.classId),
+    cardId: String(geneDecoded.cardId),
+    rarity: String(geneDecoded.rarity),
     sireId: args.sireId.toString(),
-    rarity: geneDecoded.rarity,
-    cooldownEndBlock: '',
-    siringWithId: '',
+    matronId: args.matronId.toString(),
+    cooldownEndBlock: '0',
+    siringWithId: '0',
+    genes: ethers.utils.hexlify(args._genes),
+    hp: String(geneDecoded.stats[0]),
+    speed: String(geneDecoded.stats[1]),
+    strength: String(geneDecoded.stats[2]),
+    anten: String(geneDecoded.skinBase[0]),
+    head: String(geneDecoded.skinBase[1]),
+    eye: String(geneDecoded.skinBase[2]),
+    lShouder: String(geneDecoded.skinBase[3]),
+    rShouder: String(geneDecoded.skinBase[4]),
+    lArm: String(geneDecoded.skinBase[5]),
+    rArm: String(geneDecoded.skinBase[6]),
+    lHand: String(geneDecoded.skinBase[7]),
+    rHand: String(geneDecoded.skinBase[8]),
+    mouth: String(geneDecoded.skinBase[3]),
+    hand: String(geneDecoded.skinBase[4]),
+    arm: String(geneDecoded.skinBase[5]),
+  };
+
+  return {
+    fileUrl: image,
+    attributes,
   };
 }
 
 const handleCreateRobot = async args => {
   const nftID = args.event.args._robotId.toNumber();
-  const attributes = getRobotInfo(args);
+  const info = getRobotInfo(args);
   await NFT.create(
     {
       id: getNftId(args.id, nftID),
@@ -46,40 +71,17 @@ const handleCreateRobot = async args => {
       nftId: nftID,
       status: 1,
       onSale: false,
-      attributes,
+      ...info,
     },
     { transaction: args.transaction }
   );
 
-  await resetCooldownEndBlock(args, args.event.args.matronId.toString());
-};
-
-const resetCooldownEndBlock = async (args, rawMatronId) => {
-  return updateCooldownEndBlock(args, rawMatronId, '', '');
-};
-
-const updateCooldownEndBlock = async (args, rawMatronId, cooldownEndBlock, sireId: string) => {
-  if (rawMatronId > 0) {
-    const matronId = getNftId(args.id, rawMatronId);
+  if (args.event.args.matronId.toString() != '0') {
+    const matronId = getNftId(args.id, args.event.args.matronId.toString());
     const matron = await NFT.findByPk(matronId, { transaction: args.transaction });
-    await matron.setAttributes({
-      attributes: {
-        ...matron.attributes,
-        cooldownEndBlock: cooldownEndBlock,
-        siringWithId: sireId,
-      },
-    });
+    matron.attributes.siringWithId = '0';
     await matron.save({ transaction: args.transaction });
   }
-};
-
-const handleUpdateRobot = async args => {
-  const nft = await getNft(args);
-  const attributes = getRobotInfo(args);
-  nft.setAttributes({
-    attributes,
-  });
-  await nft.save({ transaction: args.transaction });
 };
 
 const getNft = args => {
@@ -108,17 +110,21 @@ const handleDestroy = async args => {
 };
 
 const handlePregnant = async args => {
-  await updateCooldownEndBlock(
-    args,
-    args.event.args._matron.toString(),
-    args.event.args.cooldownEndBlock.toString(),
-    args.event.args.sireId.toString()
-  );
+  const matronId = getNftId(args.id, args.event.args.matronId.toString());
+  const matron = await NFT.findByPk(matronId, { transaction: args.transaction });
+  matron.attributes.cooldownEndBlock = args.event.args.cooldownEndBlock.toString();
+  matron.attributes.siringWithId = args.event.args.siringWithId.toString();
+
+  const sireId = getNftId(args.id, args.event.args.sireId.toString());
+  const sire = await NFT.findByPk(sireId, { transaction: args.transaction });
+  sire.attributes.cooldownEndBlock = args.event.args.cooldownEndBlock.toString();
+
+  await matron.save({ transaction: args.transaction });
+  await sire.save({ transaction: args.transaction });
 };
 
 const hanlders = {
   RobotCreated: handleCreateRobot,
-  UpdateRobot: handleUpdateRobot,
   Destroy: handleDestroy,
   Transfer: handlerTransfer,
   Pregnant: handlePregnant,
