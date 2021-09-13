@@ -1,7 +1,7 @@
 import { Op } from 'sequelize';
 import { DEFAULT_LIMIT, MAX_LIMIT } from '../constants';
 
-export const buildWhere = (input, Model) => {
+export const buildWhere = input => {
   let where: any = {};
 
   for (var key in input) {
@@ -13,28 +13,14 @@ export const buildWhere = (input, Model) => {
           values = values.split(',');
         }
 
-        if (!Model.rawAttributes[keys[0]]) {
-          where.attributes = where.attributes || {};
-          where.attributes = {
-            [keys[0]]: {
-              [Op[keys[1]]]: values,
-            },
-          };
-        } else {
-          where[keys[0]] = {
-            [Op[keys[1]]]: values,
-          };
-        }
+        where[keys[0]] = {
+          [Op[keys[1]]]: values,
+        };
       } else {
         throw Error('invalid query');
       }
     } else {
-      if (!Model.rawAttributes[keys[0]]) {
-        where.attributes = where.attributes || {};
-        where.attributes[keys[0]] = input[key];
-      } else {
-        where[keys[0]] = input[key];
-      }
+      where[keys[0]] = input[key];
     }
   }
   return where;
@@ -79,7 +65,10 @@ const buildQuery = (ctx, Model) => {
     delete input.orderName;
   }
 
-  query.where = buildWhere(input, Model);
+  query.where = {
+    ...query.where,
+    ...buildWhere(input),
+  };
   return query;
 };
 

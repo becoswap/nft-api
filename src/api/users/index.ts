@@ -7,7 +7,7 @@ const User = database.models.user;
 const EXPIRE_DUATION = 120;
 
 async function list(ctx) {
-  const query = buildQuery(ctx, [], ['updatedAt']);
+  const query = buildQuery(ctx, User);
   const nfts = await User.findAndCountAll(query);
   ctx.status = 200;
   ctx.body = nfts;
@@ -23,12 +23,8 @@ async function createOrUpdate(ctx) {
     return;
   }
 
-  const msg = [
-    "Becoswap:updateUser",
-    body.name,
-    String(body.timestamp)
-  ]
-  const ok = await verify(body.id, msg.join(":"), body.sign)
+  const msg = ['Becoswap:updateUser', body.name, String(body.timestamp)];
+  const ok = await verify(body.id, msg.join(':'), body.sign);
   if (!ok) {
     ctx.status = 400;
     ctx.message = 'invalid signature';
@@ -48,8 +44,7 @@ async function createOrUpdate(ctx) {
   ctx.body = user;
 }
 
-
 export default {
   list,
   createOrUpdate,
-}
+};

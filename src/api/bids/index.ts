@@ -6,7 +6,7 @@ const Nft = database.models.nft;
 const User = database.models.user;
 
 async function list(ctx) {
-  const query = buildQuery(ctx, ['bidder'], ['createdAt']);
+  const query = buildQuery(ctx, Bid);
   const nfts = await Bid.findAndCountAll({
     ...query,
     include: [

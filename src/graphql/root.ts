@@ -15,7 +15,7 @@ const root = {
        * @returns findOptions or promise that resolves with findOptions
        */
       before: (findOptions, args, context) => {
-        findOptions.where = buildWhere(args.where, database.models.nft);
+        findOptions.where = buildWhere(args.where);
         findOptions.limit = findOptions.limit | DEFAULT_LIMIT;
         if (findOptions.limit > MAX_LIMIT) {
           throw Error('limit must be less than ' + MAX_LIMIT);

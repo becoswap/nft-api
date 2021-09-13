@@ -1,6 +1,6 @@
 
 export default (sequelize) =>{
-	const { user, nft, bid } = sequelize.models;
+	const { user, nft, bid,  nft_property} = sequelize.models;
 
 	user.hasMany(nft, {
 		foreignKey: 'owner',
@@ -16,4 +16,7 @@ export default (sequelize) =>{
 		foreignKey: 'nftId',
 		as: "nft",
 	});
+
+	nft.hasMany(nft_property, {as: "search_properties"})
+	nft.hasMany(nft_property, {as: "properties"})
 }
