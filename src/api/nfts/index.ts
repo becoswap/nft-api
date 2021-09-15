@@ -81,7 +81,7 @@ async function list(ctx) {
       {
         model: Property,
         as: 'properties',
-        attributes: ['name', 'type', 'intValue', 'maxValue', 'value'],
+        attributes: ['name', 'type', 'intValue', 'maxValue', 'value', 'image'],
       },
     ],
   });

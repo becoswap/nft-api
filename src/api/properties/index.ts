@@ -3,7 +3,7 @@ import sequelize from '../../database';
 
 async function stats(ctx) {
   let properties = await sequelize.query(
-    `select count(nft_properties.name),nft_properties."value", nft_properties.name from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('property') group by nft_properties.name,nft_properties."value"`,
+    `select count(nft_properties.name),nft_properties."value", nft_properties.name from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('property', 'other_string') group by nft_properties.name,nft_properties."value"`,
     { type: QueryTypes.SELECT, replacements: [ctx.query.nftType] }
   );
 

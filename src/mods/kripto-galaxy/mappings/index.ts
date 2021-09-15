@@ -1,18 +1,16 @@
-import { ethers } from 'ethers';
-import nftContracts from '../data/kriptoRobotContracts';
-import { syncContract } from '../utils/sync_contract';
-import criptoRobotCoreABI from '../abi/CriptoRobotCore.json';
-import { kaiWeb3 } from '../utils/web3';
-import database from '../database';
-import { getNftId } from '../utils/nft';
-import { isBidContract } from '../utils/bidContract';
-import { decode } from '../utils/genes';
+import database from '../../../database';
+import { getNftId } from '../../../utils/nft';
+import { decode } from '../../../utils/genes';
 import BigNumber from 'bignumber.js';
 const Property = database.models.nft_property;
 
 const zeroAddr = '0x0000000000000000000000000000000000000000';
 
 const NFT = database.models.nft;
+
+const bidContract = '0x0000000000000000000000000000000000000000';
+
+const NFT_TYPE = 3;
 
 const cooldowns = [
   60,
@@ -53,8 +51,8 @@ interface Property {
   image?: string;
 }
 
-function getRobotInfo(payload) {
-  const args = payload.event.args;
+function getRobotInfo(event) {
+  const args = event.args;
 
   const genes = decode(new BigNumber(args._genes.toString()));
 
@@ -162,11 +160,11 @@ function getRobotInfo(payload) {
   };
 }
 
-const handleCreateRobot = async args => {
-  const nftID = args.event.args._robotId.toNumber();
-  const info = getRobotInfo(args);
-  const matronId = args.event.args.matronId.toString();
-  const sireId = args.event.args.sireId.toString();
+export const handleCreateRobot = async event => {
+  const nftID = event.args._robotId.toNumber();
+  const info = getRobotInfo(event);
+  const matronId = event.args.matronId.toString();
+  const sireId = event.args.sireId.toString();
   var generation = 0;
   var cooldownIndex = 0;
 
@@ -174,17 +172,15 @@ const handleCreateRobot = async args => {
     const matronGeneration = await Property.findOne({
       where: {
         name: PROPERTY_KEY.GENERATION,
-        nftId: getNftId(args.id, matronId),
+        nftId: getNftId(NFT_TYPE, matronId),
       },
-      transaction: args.transaction,
     });
 
     const sireGeneration = await Property.findOne({
       where: {
         name: PROPERTY_KEY.GENERATION,
-        nftId: getNftId(args.id, sireId),
+        nftId: getNftId(NFT_TYPE, sireId),
       },
-      transaction: args.transaction,
     });
     generation = matronGeneration.intValue;
     if (generation < sireGeneration.intValue) {
@@ -196,10 +192,9 @@ const handleCreateRobot = async args => {
       cooldownIndex = 13;
     }
     await updateProperty(
-      getNftId(args.id, args.event.args.matronId.toString()),
+      getNftId(NFT_TYPE, event.args.matronId.toString()),
       PROPERTY_KEY.SIRING_WITH_ID,
-      { intValue: 0 },
-      args.transaction
+      { intValue: 0 }
     );
   }
 
@@ -216,11 +211,11 @@ const handleCreateRobot = async args => {
 
   await NFT.create(
     {
-      id: getNftId(args.id, nftID),
-      creator: args.event.args._owner,
-      owner: args.event.args._owner,
+      id: getNftId(NFT_TYPE, nftID),
+      creator: event.args._owner,
+      owner: event.args._owner,
       votes: 0,
-      nftType: args.id,
+      nftType: NFT_TYPE,
       nftId: nftID,
       status: 1,
       onSale: false,
@@ -228,7 +223,6 @@ const handleCreateRobot = async args => {
       ...info,
     },
     {
-      transaction: args.transaction,
       include: [
         {
           model: Property,
@@ -239,33 +233,32 @@ const handleCreateRobot = async args => {
   );
 };
 
-async function updateProperty(nftId: string, name: string, attr: any, t) {
+async function updateProperty(nftId: string, name: string, attr: any) {
   await Property.update(attr, {
     where: {
       nftId: nftId,
       name: name,
     },
-    transaction: t,
   });
 }
 
-const getNft = args => {
-  const robotId = args.event.args._robotId.toNumber();
-  const nftID = getNftId(args.id, robotId);
-  return NFT.findByPk(nftID, { transaction: args.transaction });
+const getNft = event => {
+  const robotId = event.args._robotId.toNumber();
+  const nftID = getNftId(NFT_TYPE, robotId);
+  return NFT.findByPk(nftID);
 };
 
-const handlerTransfer = async args => {
-  const tokenId = args.event.args.tokenId.toNumber();
-  const nftID = getNftId(args.id, tokenId);
-  const nft = await NFT.findByPk(nftID, { transaction: args.transaction });
-  if (nft && !isBidContract(args.event.args.to)) {
-    nft.setAttributes({ owner: args.event.args.to });
-    await nft.save({ transaction: args.transaction });
+export const handlerTransfer = async event => {
+  const tokenId = event.args.tokenId.toNumber();
+  const nftID = getNftId(NFT_TYPE, tokenId);
+  const nft = await NFT.findByPk(nftID);
+  if (nft && event.args.to != bidContract) {
+    nft.setAttributes({ owner: event.args.to });
+    await nft.save();
   }
 };
 
-const handleDestroy = async args => {
+export const handleDestroy = async args => {
   const nft = await getNft(args);
   nft.setAttributes({
     owner: zeroAddr,
@@ -274,65 +267,27 @@ const handleDestroy = async args => {
   await nft.save({ transaction: args.transaction });
 };
 
-const handlePregnant = async args => {
-  const matronId = getNftId(args.id, args.event.args.matronId.toString());
-  await _triggerCooldown(args, matronId);
-  const sireId = getNftId(args.id, args.event.args.sireId.toString());
-  await _triggerCooldown(args, sireId);
+export const handlePregnant = async event => {
+  const matronId = getNftId(NFT_TYPE, event.args.matronId.toString());
+  await _triggerCooldown(event, matronId);
+  const sireId = getNftId(NFT_TYPE, event.args.sireId.toString());
+  await _triggerCooldown(event, sireId);
 };
 
-async function _triggerCooldown(args, nftId: string) {
+async function _triggerCooldown(event, nftId: string) {
   let cooldownIndex = await Property.findOne({
     where: { nftId: nftId, name: PROPERTY_KEY.COOLDOWNINDEX },
-    transaction: args.transaction,
   });
-  const cooldownEndBlock =
-    Math.floor(cooldowns[cooldownIndex.intValue] / 5) + args.event.blockNumber;
+  const cooldownEndBlock = Math.floor(cooldowns[cooldownIndex.intValue] / 5) + event.blockNumber;
   if (cooldownIndex.intValue < 13) {
     cooldownIndex.intValue += 1;
-    await cooldownIndex.save({ transaction: args.transaction });
+    await cooldownIndex.save();
   }
 
   await Property.update(
     { intValue: cooldownEndBlock },
     {
       where: { nftId: nftId, name: PROPERTY_KEY.COOLDOWN_END_BLOCK },
-      transaction: args.transaction,
     }
   );
 }
-
-const hanlders = {
-  RobotCreated: handleCreateRobot,
-  Destroy: handleDestroy,
-  Transfer: handlerTransfer,
-  Pregnant: handlePregnant,
-};
-
-const syncNftContract = async contractInfo => {
-  const contract = new ethers.Contract(contractInfo.address, criptoRobotCoreABI, kaiWeb3);
-  syncContract(
-    contractInfo.address,
-    contractInfo.startBlock,
-    async (transaction, startBlock: number, endBlock: number) => {
-      const events = await contract.queryFilter({}, startBlock, endBlock);
-      for (const event of events) {
-        if (hanlders[event.event]) {
-          await hanlders[event.event]({
-            ...contractInfo,
-            event: event,
-            transaction: transaction,
-          });
-        }
-      }
-    }
-  );
-};
-
-const run = async () => {
-  for (const contractInfo of nftContracts) {
-    syncNftContract(contractInfo);
-  }
-};
-
-export { run };

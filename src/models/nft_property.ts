@@ -19,11 +19,15 @@ module.exports = sequelize => {
       type: {
         allowNull: false,
         type: DataTypes.STRING,
-        enum: ['property', 'stats', 'level', 'other'],
+        enum: ['property', 'stats', 'level', 'other', 'other_string'],
         defaultValue: 'property',
       },
       name: {
         allowNull: false,
+        type: DataTypes.STRING,
+      },
+      image: {
+        allowNull: true,
         type: DataTypes.STRING,
       },
       maxValue: {
