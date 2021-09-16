@@ -12,3 +12,5 @@ dataSources:
           hanlder: handlePregnant
         - event: RobotCreated
           handler: handleCreate
+        - event: Transfer
+          hanlder: handleTransfer

@@ -7,6 +7,8 @@ const User = database.models.user;
 const Property = database.models.nft_property;
 
 async function list(ctx) {
+  const include = [];
+
   let propertyWhere = {
     [Op.and]: [],
   };
@@ -61,6 +63,16 @@ async function list(ctx) {
       delete ctx.query[field];
     }
   }
+
+  if (propertyWhere[Op.and].length > 0) {
+    include.push({
+      model: Property,
+      as: 'search_properties',
+      attributes: [],
+      where: propertyWhere,
+    });
+  }
+
   const query: any = buildQuery(ctx, NFT);
   const nfts = await NFT.findAndCountAll({
     ...query,
@@ -71,12 +83,7 @@ async function list(ctx) {
         attributes: ['name', 'avatar', 'website'],
         as: 'creatorInfo',
       },
-      {
-        model: Property,
-        as: 'search_properties',
-        attributes: [],
-        where: propertyWhere,
-      },
+      ...include,
 
       {
         model: Property,

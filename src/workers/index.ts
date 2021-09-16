@@ -7,6 +7,6 @@ const run = () => {
   nftWorker.run();
   bidWorker.run();
   vote.run();
-  kriptoRobot.run();
+  //kriptoRobot.run();
 };
 export { run };

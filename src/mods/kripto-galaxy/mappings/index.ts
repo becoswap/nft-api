@@ -160,7 +160,7 @@ function getRobotInfo(event) {
   };
 }
 
-export const handleCreateRobot = async event => {
+export const handleCreate = async event => {
   const nftID = event.args._robotId.toNumber();
   const info = getRobotInfo(event);
   const matronId = event.args.matronId.toString();
@@ -248,7 +248,7 @@ const getNft = event => {
   return NFT.findByPk(nftID);
 };
 
-export const handlerTransfer = async event => {
+export const handleTransfer = async event => {
   const tokenId = event.args.tokenId.toNumber();
   const nftID = getNftId(NFT_TYPE, tokenId);
   const nft = await NFT.findByPk(nftID);
@@ -256,15 +256,6 @@ export const handlerTransfer = async event => {
     nft.setAttributes({ owner: event.args.to });
     await nft.save();
   }
-};
-
-export const handleDestroy = async args => {
-  const nft = await getNft(args);
-  nft.setAttributes({
-    owner: zeroAddr,
-    creator: zeroAddr,
-  });
-  await nft.save({ transaction: args.transaction });
 };
 
 export const handlePregnant = async event => {
