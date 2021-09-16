@@ -30,6 +30,9 @@ module.exports = sequelize => {
         {
           fields: ['bidder'],
         },
+        {
+          fields: ['nftId'],
+        },
       ],
     }
   );

@@ -24,13 +24,9 @@ module.exports = sequelize => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      nftAddress: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
       nftId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
       from: {
         allowNull: false,

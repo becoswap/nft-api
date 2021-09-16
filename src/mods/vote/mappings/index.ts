@@ -7,12 +7,8 @@ import { getNftId } from '../../../utils/nft';
 const NFT = database.models.nft;
 const Vote = database.models.vote;
 
-const bidType = {
-  artwork: '0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1',
-};
-
 const NFT_TYPES = {
-  [bidType.artwork]: 2,
+  '0x06287b525F5593e2aF375A3552Cbc1e5E3447Ee6': 2,
 };
 
 export const BIG_TEN = new BigNumber(10);
@@ -55,8 +51,7 @@ export const handleVote = async (event: Event) => {
 
   const sumVote = await Vote.sum('votes', {
     where: {
-      nftType: nft.id,
-      nftId: event.args.tokenId,
+      nftId: nftId,
     },
   });
 
