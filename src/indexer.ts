@@ -1,6 +1,6 @@
 require('dotenv').config();
 import { ethers } from 'ethers';
-import fs from 'fs';
+import fs, { readdirSync } from 'fs';
 import cls from 'cls-hooked';
 const namespace = cls.createNamespace('indexer');
 const Sequelize = require('sequelize');
@@ -11,7 +11,12 @@ import sequelize from './database';
 import { syncContractv2 } from './utils/sync_contract';
 import { kaiWeb3 } from './utils/web3';
 
-const modules = ['kripto-galaxy'];
+const getDirectories = source =>
+  readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
+const modules = getDirectories('./src/mods');
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);

@@ -5,7 +5,7 @@ import * as kriptoRobot from './kriptoRobot';
 
 const run = () => {
   nftWorker.run();
-  bidWorker.run();
+  //bidWorker.run();
   vote.run();
   //kriptoRobot.run();
 };

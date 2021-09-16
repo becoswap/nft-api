@@ -2,10 +2,8 @@ import database from '../../../database';
 import { getNftId } from '../../../utils/nft';
 import { decode } from '../../../utils/genes';
 import BigNumber from 'bignumber.js';
+
 const Property = database.models.nft_property;
-
-const zeroAddr = '0x0000000000000000000000000000000000000000';
-
 const NFT = database.models.nft;
 
 const bidContract = '0x0000000000000000000000000000000000000000';
@@ -13,16 +11,16 @@ const bidContract = '0x0000000000000000000000000000000000000000';
 const NFT_TYPE = 3;
 
 const cooldowns = [
-  60,
-  60 * 2,
   60 * 5,
   60 * 10,
+  60 * 15,
   60 * 30,
+  60 * 45,
   60 * 60,
   60 * 60 * 2,
   60 * 60 * 4,
   60 * 60 * 8,
-  60 * 60 * 16,
+  60 * 60 * 12,
   60 * 60 * 24,
   60 * 60 * 24 * 2,
   60 * 60 * 24 * 4,
