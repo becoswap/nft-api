@@ -8,12 +8,12 @@ dataSources:
       file: "./mappings/index.ts"
       eventHandlers: 
         - event: Trade
-          hanlder: handleTrade
+          handler: handleTrade
         - event: Ask
           handler: handleAsk
         - event: Bid
-          hanlder: handleBid
+          handler: handleBid
         - event: CancelBidToken
-          hanlder: handleCancelBidToken
+          handler: handleCancelBidToken
         - event: CancelSellToken
-          hanlder: handleCancelSellToken
+          handler: handleCancelSellToken

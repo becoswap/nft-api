@@ -7,9 +7,5 @@ dataSources:
     mapping:
       file: "./mappings/index.ts"
       eventHandlers: 
-        - event: Pregnant
-          hanlder: handlePregnant
-        - event: RobotCreated
-          handler: handleCreate
         - event: Transfer
-          hanlder: handleTransfer
+          handler: handleTransfer

@@ -8,7 +8,7 @@ const NFT = database.models.nft;
 const Vote = database.models.vote;
 
 const NFT_TYPES = {
-  '0x06287b525F5593e2aF375A3552Cbc1e5E3447Ee6': 2,
+  '0x33144EC3a462b944503549179e6635B2492061F6': 2,
 };
 
 export const BIG_TEN = new BigNumber(10);

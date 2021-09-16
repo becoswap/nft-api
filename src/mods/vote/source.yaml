@@ -8,4 +8,4 @@ dataSources:
       file: "./mappings/index.ts"
       eventHandlers: 
         - event: Voted
-          hanlder: handleVote
+          handler: handleVote
