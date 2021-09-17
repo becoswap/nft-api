@@ -1,4 +1,13 @@
 const robotImageBase = 'https://images.kriptogaming.com/robot/';
+
+function newArray(name) {
+  var arr = [];
+  for (var i = 0; i < 33; i++) {
+    arr.push(`${name}:${i + 1}`);
+  }
+  return arr;
+}
+
 const nameMap = {
   color: [
     'Spessartite',
@@ -48,7 +57,7 @@ const nameMap = {
     'Landyn',
     'Misael',
     'Carl',
-    ...new Array(32).map(i => 'HEAD:' + i),
+    ...newArray('HEAD:'),
   ],
 
   anten: [
@@ -84,7 +93,7 @@ const nameMap = {
     'Hassan',
     'Jakari',
     'Dario',
-    ...new Array(32).map(i => 'ANTEN: ' + i),
+    ...newArray('ANTEN:'),
   ],
 
   face: [
@@ -121,7 +130,7 @@ const nameMap = {
     'Gianni',
     'Alvaro',
 
-    ...new Array(32).map(i => 'FACE: ' + i),
+    ...newArray('FACE:'),
   ],
   shoulder: [
     'NaKnow',
@@ -156,7 +165,8 @@ const nameMap = {
     'Clogau',
     'Jabari',
     'Kyng',
-    ...new Array(32).map(i => 'SHOULDER: ' + i),
+
+    ...newArray('SHOULDER:'),
   ],
   arm: [
     'Wani',
@@ -191,7 +201,7 @@ const nameMap = {
     'Woello',
     'Lucca',
     'Osiris',
-    ...new Array(32).map(i => 'ARM: ' + i),
+    ...newArray('ARM:'),
   ],
 };
 
