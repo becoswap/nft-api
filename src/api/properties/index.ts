@@ -3,7 +3,7 @@ import sequelize from '../../database';
 
 async function stats(ctx) {
   let properties = await sequelize.query(
-    `select count(nft_properties.name),nft_properties."value", nft_properties.name from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('property', 'other_string') group by nft_properties.name,nft_properties."value"`,
+    `select count(nft_properties.name),nft_properties."value", nft_properties.name from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('property', 'other_string') and "value" IS NOT NULL group by nft_properties.name,nft_properties."value"`,
     { type: QueryTypes.SELECT, replacements: [ctx.query.nftType] }
   );
 
@@ -28,7 +28,7 @@ async function stats(ctx) {
   });
 
   properties = await sequelize.query(
-    `select  min(nft_properties."intValue"), max(nft_properties."intValue"), nft_properties."name" from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('stats', 'level', 'other') group by nft_properties.name,nft_properties."value"`,
+    `select  min(nft_properties."intValue"), max(nft_properties."intValue"), nft_properties."name" from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('stats', 'level', 'other') group by nft_properties.name,nft_properties."intValue"`,
     { type: QueryTypes.SELECT, replacements: [ctx.query.nftType] }
   );
 

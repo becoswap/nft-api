@@ -20,6 +20,10 @@ module.exports = sequelize => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      address: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
       price: {
         allowNull: false,
         type: DataTypes.STRING,
@@ -32,6 +36,9 @@ module.exports = sequelize => {
         },
         {
           fields: ['nftId'],
+        },
+        {
+          fields: ['address'],
         },
       ],
     }

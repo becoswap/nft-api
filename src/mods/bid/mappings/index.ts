@@ -34,6 +34,7 @@ const upsertBid = async event => {
     id: id,
     nftId: getNftId(NFT_TYPES[event.address], nftId),
     bidder: args.bidder,
+    address: event.address,
     price: args.price.toString(),
   });
 };

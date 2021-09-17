@@ -29,4 +29,6 @@ export default (sequelize) =>{
 
 	nft.hasMany(nft_property, {as: "search_properties"})
 	nft.hasMany(nft_property, {as: "properties"})
+
+	nft.hasMany(nft_property)
 }

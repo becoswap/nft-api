@@ -9,19 +9,8 @@ function newArray(name) {
 }
 
 const nameMap = {
-  color: [
-    'Spessartite',
-    'Spessartite',
-    'Carnelian',
-    'Firoza',
-    'Fluorite',
-    'Amethyst',
-    'Heliodor',
-    'Opal',
-  ],
-
+  color: ['Spessartite', 'Carnelian', 'Firoza', 'Fluorite', 'Amethyst', 'Heliodor', 'Opal'],
   card: ['Titanium', 'Chromium', 'Osmium', 'Steel', 'Iridium', 'Tungsten'],
-
   rarity: ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical', 'Immotal'],
 
   head: [
@@ -57,7 +46,7 @@ const nameMap = {
     'Landyn',
     'Misael',
     'Carl',
-    ...newArray('HEAD:'),
+    ...newArray('HEAD'),
   ],
 
   anten: [
@@ -93,7 +82,7 @@ const nameMap = {
     'Hassan',
     'Jakari',
     'Dario',
-    ...newArray('ANTEN:'),
+    ...newArray('ANTEN'),
   ],
 
   face: [
@@ -130,7 +119,7 @@ const nameMap = {
     'Gianni',
     'Alvaro',
 
-    ...newArray('FACE:'),
+    ...newArray('FACE'),
   ],
   shoulder: [
     'NaKnow',
@@ -166,7 +155,7 @@ const nameMap = {
     'Jabari',
     'Kyng',
 
-    ...newArray('SHOULDER:'),
+    ...newArray('SHOULDER'),
   ],
   arm: [
     'Wani',
@@ -201,7 +190,7 @@ const nameMap = {
     'Woello',
     'Lucca',
     'Osiris',
-    ...newArray('ARM:'),
+    ...newArray('ARM'),
   ],
 };
 

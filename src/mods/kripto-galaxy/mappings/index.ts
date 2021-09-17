@@ -63,7 +63,7 @@ function getRobotInfo(event) {
 
     {
       type: 'other_string',
-      name: 'rarity',
+      name: 'Gen0Rarity',
       value: genes.rarity,
     },
 
@@ -239,12 +239,6 @@ async function updateProperty(nftId: string, name: string, attr: any) {
     },
   });
 }
-
-const getNft = event => {
-  const robotId = event.args._robotId.toNumber();
-  const nftID = getNftId(NFT_TYPE, robotId);
-  return NFT.findByPk(nftID);
-};
 
 export const handleTransfer = async event => {
   const tokenId = event.args.tokenId.toNumber();
