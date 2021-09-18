@@ -17,3 +17,24 @@ dataSources:
           handler: handleCancelBidToken
         - event: CancelSellToken
           handler: handleCancelSellToken
+ - name: bid-kaba
+    source:
+      address: "0xd504F8A8975527689E9c8727CA37a0FFCD1351cF"
+      startBlock: 4352976
+      abi: "./abis/bid.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Trade
+          handler: handleTrade
+        - event: Ask
+          handler: handleAsk
+        - event: Bid
+          handler: handleBid
+        - event: CancelBidToken
+          handler: handleCancelBidToken
+        - event: CancelSellToken
+          handler: handleCancelSellToken
+  
+
+          

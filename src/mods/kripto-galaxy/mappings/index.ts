@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 const Property = database.models.nft_property;
 const NFT = database.models.nft;
 
-const bidContract = '0x0000000000000000000000000000000000000000';
+const bidContract = '0xd504F8A8975527689E9c8727CA37a0FFCD1351cF';
 
 const NFT_TYPE = 3;
 
