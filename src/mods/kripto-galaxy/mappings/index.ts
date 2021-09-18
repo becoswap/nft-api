@@ -63,7 +63,7 @@ function getRobotInfo(event) {
 
     {
       type: 'other_string',
-      name: 'Gen0Rarity',
+      name: 'gen_0_rarity',
       value: genes.rarity,
     },
 
@@ -120,22 +120,22 @@ function getRobotInfo(event) {
       image: genes.eye.image,
     },
     {
-      name: 'lShouder',
+      name: 'left_shouder',
       value: genes.lShouder.name,
       image: genes.lShouder.image,
     },
     {
-      name: 'rShouder',
+      name: 'right_shouder',
       value: genes.rShouder.name,
       image: genes.rShouder.image,
     },
     {
-      name: 'lArm',
+      name: 'left_arm',
       value: genes.lArm.name,
       image: genes.lArm.image,
     },
     {
-      name: 'rArm',
+      name: 'right_arm',
       value: genes.rArm.name,
       image: genes.rArm.image,
     },

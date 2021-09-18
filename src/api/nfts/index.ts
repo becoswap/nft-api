@@ -2,12 +2,49 @@ import { Op } from 'sequelize';
 import sequelize from '../../database';
 import database from '../../database';
 import { buildQuery } from '../../utils/query';
-import jsStringEscape from 'js-string-escape';
 import { DEFAULT_LIMIT, MAX_LIMIT } from '../../constants';
+import { escape } from 'sqlstring';
 
 const NFT = database.models.nft;
 const User = database.models.user;
 const Property = database.models.nft_property;
+
+function addPropertyFilter(
+  valueField: string,
+  innerJoins,
+  i: number,
+  name: string,
+  condition: string,
+  rawValue: string
+) {
+  var values: any = rawValue.split(',').map(v => {
+    return escape(v);
+  });
+
+  let op = '=';
+  switch (condition) {
+    case 'lte':
+      op = '<=';
+      break;
+    case 'gte':
+      op = '>=';
+      break;
+    case 'in':
+      op = 'in';
+      break;
+  }
+
+  if (op != 'in') {
+    values = values[0];
+  } else {
+    values = `(${values.join(',')})`;
+  }
+
+  innerJoins.push(`
+            INNER JOIN nft_properties AS np_${i} 
+            ON nfts.id=np_${i}."nftId" 
+            AND np_${i}.name=${name} AND np_${i}."${valueField}" ${op} ${values}`);
+}
 
 async function list(ctx) {
   const innerJoins = [];
@@ -16,54 +53,30 @@ async function list(ctx) {
     throw Error('limit must be less than ' + MAX_LIMIT);
   }
 
+  let i = 0;
   for (var field in ctx.query) {
+    i++;
+    const values = ctx.query[field].split(',').map(v => {
+      return escape(v);
+    });
+
     if (field.startsWith('int_')) {
       const keys = field.replace('int_', '').split('__');
+      const name = escape(keys[0]);
       if (keys.length == 2) {
-        const key = jsStringEscape(keys[0]);
-        const values = ctx.query[field].split(',').map(v => {
-          return jsStringEscape(v);
-        });
-
-        let op = '=';
-        switch (keys[1]) {
-          case 'lte':
-            op = '<=';
-            break;
-          case 'gte':
-            op = '>=';
-            break;
-        }
-
-        innerJoins.push(`
-            INNER JOIN nft_properties AS np_${key} 
-            ON nfts.id=np_${key}."nftId" 
-            AND np_${key}.name='${key}' AND np_${key}."intValue" ${op} ${values[0]}`);
+        addPropertyFilter('intValue', innerJoins, i, name, keys[1], ctx.query[field]);
       } else {
-        const key = jsStringEscape(keys[0]);
-        const values = ctx.query[field].split(',').map(v => {
-          return jsStringEscape(v);
-        });
-        innerJoins.push(`
-            INNER JOIN nft_properties AS np_${key} 
-            ON nfts.id=np_${key}."nftId" 
-            AND np_${key}.name='${key}' AND np_${key}."intValue" =  ${values[0]}`);
+        addPropertyFilter('intValue', innerJoins, i, name, 'in', ctx.query[field]);
       }
       delete ctx.query[field];
     } else if (field.startsWith('string_')) {
       const keys = field.replace('string_', '').split('__');
-      const key = jsStringEscape(keys[0]);
-      const values = ctx.query[field]
-        .split(',')
-        .map(v => {
-          return `'${jsStringEscape(v)}'`;
-        })
-        .join(',');
-
-      innerJoins.push(`
-            INNER JOIN nft_properties AS np_${key} 
-            ON nfts.id=np_${key}."nftId" 
-            AND np_${key}.name='${key}' AND np_${key}.value in (${values})`);
+      const name = escape(keys[0]);
+      if (keys.length == 2) {
+        addPropertyFilter('value', innerJoins, i, name, keys[1], ctx.query[field]);
+      } else {
+        addPropertyFilter('value', innerJoins, i, name, 'in', ctx.query[field]);
+      }
       delete ctx.query[field];
     }
   }
@@ -71,29 +84,30 @@ async function list(ctx) {
   const whereAnd = [];
 
   if (ctx.query['nftType']) {
-    whereAnd.push(`nfts."nftType" = ${jsStringEscape(ctx.query['nftType'])}`);
+    whereAnd.push(`nfts."nftType" = ${escape(ctx.query['nftType'])}`);
+    console.log(escape(ctx.query['nftType']));
   }
 
   if (ctx.query['onSale']) {
-    whereAnd.push(`nfts."onSale" = ${jsStringEscape(ctx.query['nftType'])}`);
+    whereAnd.push(`nfts."onSale" = ${escape(ctx.query['nftType'])}`);
   }
 
   if (ctx.query['owner']) {
-    whereAnd.push(`nfts."owner" = '${jsStringEscape(ctx.query['owner'])}'`);
+    whereAnd.push(`nfts."owner" = '${escape(ctx.query['owner'])}'`);
   }
 
   if (ctx.query['creator']) {
-    whereAnd.push(`nfts."creator" = '${jsStringEscape(ctx.query['creator'])}'`);
+    whereAnd.push(`nfts."creator" = '${escape(ctx.query['creator'])}'`);
   }
 
   if (ctx.query.status) {
-    whereAnd.push(`nfts."status" = ${jsStringEscape(ctx.query.status)}`);
+    whereAnd.push(`nfts."status" = ${escape(ctx.query.status)}`);
   }
 
   if (ctx.query['ids']) {
     const ids = ctx.query['ids']
       .split(',')
-      .map(id => `'${jsStringEscape(id)}'`)
+      .map(id => escape(id))
       .join(',');
     whereAnd.push(`nfts."id" in (${ids})`);
   }
@@ -110,13 +124,13 @@ async function list(ctx) {
       orderDirection = 'ASC';
     }
 
-    innerJoins.push(`ORDER BY "${jsStringEscape(ctx.query.orderName)}" ${orderDirection}`);
+    if (['votes', 'prices', 'createdAt'].includes(ctx.query.orderName)) {
+      innerJoins.push(`ORDER BY "${ctx.query.orderName}" ${orderDirection}`);
+    }
   }
 
   if (limit) {
-    innerJoins.push(
-      `LIMIT ${jsStringEscape(limit)} OFFSET ${jsStringEscape(ctx.query.offset || 0)}`
-    );
+    innerJoins.push(`LIMIT ${escape(limit)} OFFSET ${escape(ctx.query.offset || 0)}`);
   }
 
   const rows = await sequelize.query('SELECT nfts.id FROM nfts ' + innerJoins.join(' '));
