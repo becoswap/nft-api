@@ -47,6 +47,7 @@ interface Property {
   value?: string;
   intValue?: number;
   image?: string;
+  maxValue?: number;
 }
 
 function getRobotInfo(event) {
@@ -200,11 +201,13 @@ export const handleCreate = async event => {
     type: PROPERTY_TYPE.LEVEL,
     name: PROPERTY_KEY.GENERATION,
     intValue: generation,
+    maxValue: 10000,
   });
   info.properties.push({
     type: PROPERTY_TYPE.LEVEL,
     name: PROPERTY_KEY.COOLDOWNINDEX,
     intValue: cooldownIndex,
+    maxValue: 13,
   });
 
   await NFT.create(
