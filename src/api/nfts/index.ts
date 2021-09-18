@@ -83,20 +83,25 @@ async function list(ctx) {
     whereAnd.push(`nfts."nftType" = ${escape(ctx.query['nftType'])}`);
   }
 
-  if (ctx.query['onSale']) {
-    whereAnd.push(`nfts."onSale" = ${escape(ctx.query['nftType'])}`);
+  if (ctx.query['onSale'] != undefined) {
+    whereAnd.push(`nfts."onSale" = ${escape(ctx.query['onSale'])}`);
   }
 
   if (ctx.query['owner']) {
-    whereAnd.push(`nfts."owner" = '${escape(ctx.query['owner'])}'`);
+    whereAnd.push(`nfts."owner" = ${escape(ctx.query['owner'])}`);
   }
 
   if (ctx.query['creator']) {
-    whereAnd.push(`nfts."creator" = '${escape(ctx.query['creator'])}'`);
+    whereAnd.push(`nfts."creator" = ${escape(ctx.query['creator'])}`);
   }
 
   if (ctx.query.status) {
     whereAnd.push(`nfts."status" = ${escape(ctx.query.status)}`);
+  }
+
+  if (ctx.query.q) {
+    const q = `%${ctx.query.q}%`;
+    whereAnd.push(`nfts."name" like ${escape(q)}`);
   }
 
   if (ctx.query['ids']) {
@@ -120,7 +125,7 @@ async function list(ctx) {
     }
 
     if (['votes', 'prices', 'createdAt'].includes(ctx.query.orderName)) {
-      innerJoins.push(`ORDER BY "${ctx.query.orderName}" ${orderDirection}`);
+      innerJoins.push(`ORDER BY nfts."${ctx.query.orderName}" ${orderDirection}`);
     }
   }
 
