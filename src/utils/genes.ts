@@ -231,10 +231,15 @@ const _decode = genes => {
 };
 
 function getImage(traits): string {
+  let cardId = traits.cardId;
+  if (traits.rarity === 0) {
+    cardId += 6;
+  }
+
   return (
     robotImageBase +
     [
-      traits.cardId,
+      cardId,
       traits.head,
       traits.anten,
       traits.eye,
