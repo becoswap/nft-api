@@ -81,7 +81,6 @@ async function list(ctx) {
 
   if (ctx.query['nftType']) {
     whereAnd.push(`nfts."nftType" = ${escape(ctx.query['nftType'])}`);
-    console.log(escape(ctx.query['nftType']));
   }
 
   if (ctx.query['onSale']) {
