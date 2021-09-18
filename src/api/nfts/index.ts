@@ -56,10 +56,6 @@ async function list(ctx) {
   let i = 0;
   for (var field in ctx.query) {
     i++;
-    const values = ctx.query[field].split(',').map(v => {
-      return escape(v);
-    });
-
     if (field.startsWith('int_')) {
       const keys = field.replace('int_', '').split('__');
       const name = escape(keys[0]);
