@@ -4,7 +4,7 @@ import { DataTypes } from 'sequelize';
 // This function will automatically receive as parameter the Sequelize connection object.
 module.exports = sequelize => {
   sequelize.define(
-    'event',
+    'nft_property',
     {
       id: {
         allowNull: false,
@@ -12,46 +12,52 @@ module.exports = sequelize => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      txHash: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      event: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      address: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
       nftId: {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      from: {
+      type: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        enum: ['property', 'stats', 'level', 'other', 'other_string'],
+        defaultValue: 'property',
+      },
+      name: {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      to: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      metadata: {
+      image: {
         allowNull: true,
-        type: DataTypes.JSONB,
+        type: DataTypes.STRING,
+      },
+      maxValue: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+      },
+      value: {
+        allowNull: true,
+        type: DataTypes.STRING,
+      },
+      intValue: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
       },
     },
     {
       updatedAt: false,
+      createdAt: false,
       indexes: [
         {
           fields: ['nftId'],
         },
         {
-          fields: ['createdAt'],
+          fields: ['name'],
         },
         {
-          fields: ['from'],
+          fields: ['value'],
+        },
+        {
+          fields: ['intValue'],
         },
       ],
     }

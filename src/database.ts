@@ -37,6 +37,8 @@ const modelDefiners = [
   require('./models/user'),
   require('./models/artwork'),
   require('./models/vote'),
+  require('./models/bid'),
+  require('./models/nft_property'),
 ];
 
 // We define all models according to their files.

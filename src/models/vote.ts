@@ -12,13 +12,9 @@ module.exports = sequelize => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      nftType: {
-        allowNull: false,
-        type: DataTypes.INTEGER,
-      },
       nftId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
       voter: {
         allowNull: false,
@@ -30,13 +26,7 @@ module.exports = sequelize => {
       },
     },
     {
-      // If don't want updatedAt
-      updatedAt: false,
-
       indexes: [
-        {
-          fields: ['nftType'],
-        },
         {
           fields: ['nftId'],
         },

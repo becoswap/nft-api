@@ -73,6 +73,7 @@ module.exports = sequelize => {
         allowNull: true,
         type: DataTypes.JSONB,
       },
+
       onSale: {
         allowNull: false,
         default: false,
@@ -103,6 +104,11 @@ module.exports = sequelize => {
         },
         {
           fields: ['votes'],
+        },
+        {
+          fields: ['attributes'],
+          using: 'gin',
+          operator: 'jsonb_path_ops',
         },
       ],
     }

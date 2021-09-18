@@ -21,7 +21,10 @@ async function create(ctx) {
       name: body.name,
       fileUrl: body.fileUrl,
       description: body.description,
-      meta: body.metadata,
+      meta: {
+        image: body.metadata.image,
+        royalties: body.metadata.royalties,
+      },
     })
   );
 

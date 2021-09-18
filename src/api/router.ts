@@ -8,6 +8,8 @@ import users from './users';
 import upload from './upload';
 import artworks from './artworks';
 import votes from './votes';
+import bids from './bids';
+import * as properties from './properties';
 
 const router = new Router();
 
@@ -20,6 +22,9 @@ function authM() {
 
 // NFTS API -----------------------------
 router.get('/nfts', nfts.list);
+router.get('/nfts/count', nfts.count);
+router.get('/nfts/:id', nfts.get);
+
 router.put('/nfts/:id', authM(), nfts.update);
 
 // NFTs Events API -----------------------------------
@@ -38,5 +43,10 @@ router.post('/artworks', artworks.create);
 
 // Votes apis
 router.get('/votes', votes.list);
+
+// Bids apis
+router.get('/bids', bids.list);
+
+router.get('/properties/stats', properties.stats);
 
 module.exports = router;

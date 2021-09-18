@@ -1,0 +1,19 @@
+dataSources:
+  - name: bid-artwork
+    source:
+      address: "0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1"
+      startBlock: 3560189
+      abi: "./abis/bid.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Trade
+          handler: handleTrade
+        - event: Ask
+          handler: handleAsk
+        - event: Bid
+          handler: handleBid
+        - event: CancelBidToken
+          handler: handleCancelBidToken
+        - event: CancelSellToken
+          handler: handleCancelSellToken

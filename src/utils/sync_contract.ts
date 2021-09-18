@@ -16,8 +16,7 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
   let lastestBlock = 0;
   while (true) {
     try {
-      lastestBlock = await kaiWeb3.getBlockNumber();
-      lastestBlock = lastestBlock - 1;
+      lastestBlock = (await kaiWeb3.getBlockNumber()) - 1;
       if (lastestBlock < startBlock) {
         sleep(5000);
         continue;
@@ -46,6 +45,43 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
       await t.rollback();
       const d = new Date();
       console.error(d.toString(), ': sync contract ' + contractAddress + ' err: ', err.message);
+      await sleep(20000);
+    }
+  }
+};
+
+export const syncContractv2 = async (contractAddress: string, _startBlock: number, handler) => {
+  const syncStatuses = await SyncStatus.findOrCreate({
+    where: { id: contractAddress },
+    defaults: { lastBlock: _startBlock - 1 },
+  });
+  const syncStatus: any = syncStatuses[0];
+  let startBlock = syncStatus.lastBlock + 1;
+  let lastestBlock = 0;
+  while (true) {
+    try {
+      lastestBlock = (await kaiWeb3.getBlockNumber()) - 1;
+      if (lastestBlock < startBlock) {
+        sleep(5000);
+        continue;
+      }
+
+      let endBlock = startBlock;
+      if (lastestBlock - startBlock > SYNC_MAX_BLOCK) {
+        endBlock += SYNC_MAX_BLOCK;
+      } else {
+        endBlock = lastestBlock;
+      }
+
+      await database.transaction(async () => {
+        await handler(startBlock, endBlock);
+        syncStatus.set('lastBlock', endBlock);
+        await syncStatus.save();
+      });
+      startBlock = endBlock + 1;
+    } catch (e) {
+      const d = new Date();
+      console.error(d.toString(), ': sync contract ' + contractAddress + ' err: ', e.message);
       await sleep(20000);
     }
   }

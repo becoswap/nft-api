@@ -4,19 +4,19 @@ import { DataTypes } from 'sequelize';
 // This function will automatically receive as parameter the Sequelize connection object.
 module.exports = sequelize => {
   sequelize.define(
-    'event',
+    'bid',
     {
       id: {
         allowNull: false,
-        autoIncrement: true,
+        autoIncrement: false,
         primaryKey: true,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
-      txHash: {
+      nftId: {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      event: {
+      bidder: {
         allowNull: false,
         type: DataTypes.STRING,
       },
@@ -24,34 +24,21 @@ module.exports = sequelize => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      nftId: {
+      price: {
         allowNull: false,
         type: DataTypes.STRING,
-      },
-      from: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      to: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      metadata: {
-        allowNull: true,
-        type: DataTypes.JSONB,
       },
     },
     {
-      updatedAt: false,
       indexes: [
+        {
+          fields: ['bidder'],
+        },
         {
           fields: ['nftId'],
         },
         {
-          fields: ['createdAt'],
-        },
-        {
-          fields: ['from'],
+          fields: ['address'],
         },
       ],
     }

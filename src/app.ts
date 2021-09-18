@@ -6,9 +6,22 @@ const body = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const conditional = require('koa-conditional-get');
 const etag = require('koa-etag');
+const mount = require('koa-mount');
+const graphqlHTTP = require('koa-graphql');
+
 require('dotenv').config();
 
 import sequelize from './database';
+
+import typeDefs from './graphql/schema';
+import resolvers from './graphql/root';
+import { makeExecutableSchema } from '@graphql-tools/schema';
+
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers,
+});
+
 const router = require('./api/router');
 const app = new Koa();
 
@@ -37,6 +50,16 @@ app.context.cache = {};
 
 app.use(router.routes());
 app.use(router.allowedMethods());
+
+app.use(
+  mount(
+    '/graphql',
+    graphqlHTTP({
+      schema: schema,
+      graphiql: true,
+    })
+  )
+);
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
