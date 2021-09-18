@@ -51,6 +51,9 @@ module.exports = sequelize => {
           fields: ['nftId'],
         },
         {
+          fields: ['name'],
+        },
+        {
           fields: ['value'],
         },
         {

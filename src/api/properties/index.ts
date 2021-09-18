@@ -28,11 +28,11 @@ async function stats(ctx) {
   });
 
   properties = await sequelize.query(
-    `select  min(nft_properties."intValue"), max(nft_properties."intValue"), nft_properties."name" from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('stats', 'level', 'other') group by nft_properties.name,nft_properties."intValue"`,
+    `select  min(nft_properties."intValue"), max(nft_properties."intValue"), nft_properties."name" from nft_properties inner join nfts on nft_properties."nftId"=nfts.id and nfts."nftType"=?  where "type" in ('stats', 'level', 'other') group by nft_properties.name`,
     { type: QueryTypes.SELECT, replacements: [ctx.query.nftType] }
   );
 
-  ctx.body = {
+  const data = {
     stringProperties: stringProperties,
     numberProperties: properties
       .map(p => {
@@ -46,6 +46,8 @@ async function stats(ctx) {
       })
       .filter(a => a.value.max > 0),
   };
+
+  ctx.body = data;
 }
 
 export { stats };
