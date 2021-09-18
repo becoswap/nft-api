@@ -11,7 +11,7 @@ function newArray(name) {
 const nameMap = {
   color: ['Spessartite', 'Carnelian', 'Firoza', 'Fluorite', 'Amethyst', 'Heliodor', 'Opal'],
   card: ['Titanium', 'Chromium', 'Osmium', 'Steel', 'Iridium', 'Tungsten'],
-  rarity: ['Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical', 'Immotal'],
+  rarity: [null, 'Common', 'Uncommon', 'Rare', 'Legendary', 'Mythical', 'Immotal'],
 
   head: [
     'Hevin',

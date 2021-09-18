@@ -63,12 +63,6 @@ function getRobotInfo(event) {
     },
 
     {
-      type: 'other_string',
-      name: 'gen_0_rarity',
-      value: genes.rarity,
-    },
-
-    {
       type: 'other',
       name: 'sireId',
       intValue: args.sireId.toNumber(),
@@ -152,6 +146,14 @@ function getRobotInfo(event) {
       value: genes.head_color,
     },
   ];
+
+  if (genes.rarity != null) {
+    properties.push({
+      type: 'other_string',
+      name: 'gen_0_rarity',
+      value: genes.rarity,
+    });
+  }
 
   return {
     fileUrl: genes.image,
