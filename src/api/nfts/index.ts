@@ -118,14 +118,14 @@ async function list(ctx) {
   }
   const count = await sequelize.query('SELECT count(nfts.id) FROM nfts ' + innerJoins.join(' '));
 
-  if (ctx.query.orderName) {
-    let orderDirection = 'DESC';
-    if (ctx.query.orderBy === 'ASC') {
-      orderDirection = 'ASC';
+  if (ctx.query.orderBy) {
+    let orderDirection = 'desc';
+    if (ctx.query.orderDirection === 'asc') {
+      orderDirection = 'asc';
     }
 
-    if (['votes', 'prices', 'createdAt'].includes(ctx.query.orderName)) {
-      innerJoins.push(`ORDER BY nfts."${ctx.query.orderName}" ${orderDirection}`);
+    if (['votes', 'price', 'createdAt', 'id', 'nftId'].includes(ctx.query.orderBy)) {
+      innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" ${orderDirection}`);
     }
   }
 

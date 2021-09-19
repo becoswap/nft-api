@@ -38,15 +38,15 @@ module.exports = sequelize => {
       },
       price: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.NUMBER,
       },
       auctionPrice: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.NUMBER,
       },
       maxBidPrice: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.NUMBER,
       },
       fileUrl: {
         allowNull: true,
@@ -104,6 +104,9 @@ module.exports = sequelize => {
         },
         {
           fields: ['votes'],
+        },
+        {
+          fields: ['price'],
         },
         {
           fields: ['attributes'],
