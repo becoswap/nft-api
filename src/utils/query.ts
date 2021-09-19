@@ -54,15 +54,15 @@ const buildQuery = (ctx, Model) => {
     delete input.ids;
   }
 
-  if (input.orderName) {
-    let orderBy = 'DESC';
-    if (input.orderBy == 'asc') {
-      orderBy = 'ASC';
+  if (input.orderBy) {
+    let orderDirection = 'DESC';
+    if (input.orderDirection == 'asc') {
+      orderDirection = 'ASC';
     }
 
-    query.order = [[input.orderName, orderBy]];
+    query.order = [[input.orderBy, orderDirection]];
     delete input.orderBy;
-    delete input.orderName;
+    delete input.orderDirection;
   }
 
   query.where = {
