@@ -53,7 +53,7 @@ const buildQuery = (ctx, Model) => {
     };
     delete input.ids;
   }
-
+  delete input.orderName;
   if (input.orderBy) {
     let orderDirection = 'DESC';
     if (input.orderDirection == 'asc') {
