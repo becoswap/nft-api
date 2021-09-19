@@ -93,7 +93,7 @@ export async function handleTrade(event) {
     exchangeAddress: '',
     quoteToken: '',
     onSale: false,
-    price: '',
+    price: 0,
   });
 
   await nft.save();
@@ -125,7 +125,7 @@ export async function handleCancelSellToken(event) {
     exchangeAddress: '',
     quoteToken: '',
     onSale: false,
-    price: '',
+    price: 0,
   });
   await nft.save();
 }
