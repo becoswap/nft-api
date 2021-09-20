@@ -51,5 +51,6 @@ router.get('/bids', bids.list);
 router.get('/properties/stats', properties.stats);
 
 router.get('/collections/:id', collection.get);
+router.get('/collections', collection.list);
 
 module.exports = router;
