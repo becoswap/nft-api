@@ -5,7 +5,7 @@ const Collection = sequelize.models.collection;
 async function stats(ctx) {
   let replacements = [];
   const whereArr = [];
-  const nftType = ctx.query.nftType | 3;
+  const nftType = ctx.query.nftType || 3;
   const collection = await Collection.findByPk(nftType);
 
   if (!collection) {
