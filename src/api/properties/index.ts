@@ -1,12 +1,23 @@
 import { QueryTypes } from 'sequelize';
 import sequelize from '../../database';
+const Collection = sequelize.models.collection;
 
 async function stats(ctx) {
   let replacements = [];
   const whereArr = [];
+  const nftType = ctx.query.nftType | 3;
+  const collection = await Collection.findByPk(nftType);
+
+  if (!collection) {
+    ctx.status = 400;
+    ctx.body = {
+      message: 'Collection not found',
+    };
+    return;
+  }
 
   whereArr.push(`nfts."nftType" = ?`);
-  replacements.push(ctx.query.nftType | 3);
+  replacements.push(nftType);
 
   if (ctx.query.owner) {
     whereArr.push(`nfts."owner" = ?`);
@@ -51,6 +62,7 @@ async function stats(ctx) {
   );
 
   const data = {
+    collection,
     stringProperties: stringProperties,
     numberProperties: properties
       .map(p => {
