@@ -155,10 +155,16 @@ async function list(ctx) {
       },
     ],
   });
+
+  const nftById = {};
+  for (let nft of nfts) {
+    nftById[nft.id] = nft;
+  }
+
   ctx.status = 200;
   ctx.body = {
     count: Number(count[0][0].count),
-    rows: nfts,
+    rows: rows[0].map(r => nftById[r.id]),
   };
 }
 
