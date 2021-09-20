@@ -1,10 +1,12 @@
 import database from '../../../database';
 import { getNftId } from '../../../utils/nft';
 import md5 from 'blueimp-md5';
+import BigNumber from 'bignumber.js';
 
 const Event = database.models.event;
 const Nft = database.models.nft;
 const Bid = database.models.bid;
+const Collection = database.models.collection;
 
 const bidType = {
   artwork: '0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1',
@@ -98,6 +100,12 @@ export async function handleTrade(event) {
 
   await nft.save();
   await removeBid(event, event.args.buyer);
+
+  const col = await Collection.findByPk(NFT_TYPES[event.address]);
+  const tradePrice = new BigNumber(event.args.price.toString());
+  const totalVolume = new BigNumber(col.totalVolume);
+  col.totalVolume = totalVolume.plus(tradePrice).toString();
+  await col.save();
 }
 
 export async function handleAsk(event) {

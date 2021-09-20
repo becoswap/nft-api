@@ -10,6 +10,7 @@ import artworks from './artworks';
 import votes from './votes';
 import bids from './bids';
 import * as properties from './properties';
+import collection from './collections';
 
 const router = new Router();
 
@@ -48,5 +49,7 @@ router.get('/votes', votes.list);
 router.get('/bids', bids.list);
 
 router.get('/properties/stats', properties.stats);
+
+router.get('/collections/:id', collection.get);
 
 module.exports = router;

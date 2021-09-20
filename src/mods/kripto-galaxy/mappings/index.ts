@@ -2,9 +2,11 @@ import database from '../../../database';
 import { getNftId } from '../../../utils/nft';
 import { decode } from '../../../utils/genes';
 import BigNumber from 'bignumber.js';
+import { saveTotalOwner } from '../../../utils/collection';
 
 const Property = database.models.nft_property;
 const NFT = database.models.nft;
+const Collection = database.models.collection;
 
 const bidContract = '0xd504F8A8975527689E9c8727CA37a0FFCD1351cF';
 
@@ -57,7 +59,6 @@ function getRobotInfo(event) {
 
   const properties: Array<Property> = [
     {
-      type: 'other_string',
       name: 'card',
       value: genes.card,
     },
@@ -137,19 +138,16 @@ function getRobotInfo(event) {
 
     {
       name: 'eye_color',
-      type: 'other_string',
       value: genes.eye_color,
     },
     {
       name: 'head_color',
-      type: 'other_string',
       value: genes.head_color,
     },
   ];
 
   if (genes.rarity != null) {
     properties.push({
-      type: 'other_string',
       name: 'gen_0_rarity',
       value: genes.rarity,
     });
@@ -234,6 +232,12 @@ export const handleCreate = async event => {
       ],
     }
   );
+
+  const col = await Collection.findByPk(NFT_TYPE);
+  col.totalItems += 1;
+  await col.save();
+
+  await saveTotalOwner(NFT_TYPE);
 };
 
 async function updateProperty(nftId: string, name: string, attr: any) {
@@ -252,6 +256,8 @@ export const handleTransfer = async event => {
   if (nft && event.args.to != bidContract) {
     nft.setAttributes({ owner: event.args.to });
     await nft.save();
+
+    await saveTotalOwner(NFT_TYPE);
   }
 };
 
