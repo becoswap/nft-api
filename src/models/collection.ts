@@ -51,6 +51,11 @@ module.exports = sequelize => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      meta: {
+        allowNull: false,
+        type: DataTypes.JSONB,
+        defaultValue: {},
+      },
       status: {
         allowNull: false,
         type: DataTypes.INTEGER,
