@@ -18,7 +18,7 @@ const cooldowns = [
   60 * 15,
   60 * 30,
   60 * 45,
-  60 * 60,
+  60 * 60 * 60,
   60 * 60 * 2,
   60 * 60 * 4,
   60 * 60 * 8,
@@ -116,12 +116,12 @@ function getRobotInfo(event) {
       image: genes.eye.image,
     },
     {
-      name: 'left_shouder',
+      name: 'left_shoulder',
       value: genes.lShouder.name,
       image: genes.lShouder.image,
     },
     {
-      name: 'right_shouder',
+      name: 'right_shoulder',
       value: genes.rShouder.name,
       image: genes.rShouder.image,
     },

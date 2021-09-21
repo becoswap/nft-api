@@ -101,7 +101,7 @@ async function list(ctx) {
 
   if (ctx.query.q) {
     const q = `%${ctx.query.q}%`;
-    whereAnd.push(`nfts."name" like ${escape(q)}`);
+    whereAnd.push(`nfts."name" ilike ${escape(q)}`);
   }
 
   if (ctx.query['ids']) {
