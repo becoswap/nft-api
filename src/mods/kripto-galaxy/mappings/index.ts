@@ -8,7 +8,10 @@ const Property = database.models.nft_property;
 const NFT = database.models.nft;
 const Collection = database.models.collection;
 
-const bidContract = '0xd504F8A8975527689E9c8727CA37a0FFCD1351cF';
+const bidContract = {
+  '0xd504F8A8975527689E9c8727CA37a0FFCD1351cF': true,
+  '0x936EC122D6F0e204aCA2E0eab2394d7305fbB6f8': true,
+};
 
 const NFT_TYPE = 3;
 
@@ -253,7 +256,7 @@ export const handleTransfer = async event => {
   const tokenId = event.args.tokenId.toNumber();
   const nftID = getNftId(NFT_TYPE, tokenId);
   const nft = await NFT.findByPk(nftID);
-  if (nft && event.args.to != bidContract) {
+  if (nft && !bidContract[event.args.to]) {
     nft.setAttributes({ owner: event.args.to });
     await nft.save();
 

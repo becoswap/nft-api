@@ -11,6 +11,7 @@ const Collection = database.models.collection;
 const bidType = {
   artwork: '0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1',
   kaba: '0xd504F8A8975527689E9c8727CA37a0FFCD1351cF',
+  kabaKai: '0x936EC122D6F0e204aCA2E0eab2394d7305fbB6f8',
 };
 
 const beco = '0x2Eddba8b949048861d2272068A94792275A51658';
@@ -18,11 +19,13 @@ const beco = '0x2Eddba8b949048861d2272068A94792275A51658';
 const NFT_TYPES = {
   [bidType.artwork]: 2,
   [bidType.kaba]: 3,
+  [bidType.kabaKai]: 3,
 };
 
 const QUOTE_ADDRESSES = {
   [bidType.artwork]: beco,
   [bidType.kaba]: beco,
+  [bidType.kabaKai]: '',
 };
 
 function getBidId(event) {
