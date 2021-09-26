@@ -10,6 +10,7 @@ import YAML from 'yaml';
 import sequelize from './database';
 import { syncContractv2 } from './utils/sync_contract';
 import { kaiWeb3 } from './utils/web3';
+import { syncLatestBlock } from './utils/blockNumber';
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -55,6 +56,7 @@ function startJob(module, dataSource) {
 
 async function start() {
   await assertDatabaseConnectionOk();
+  await syncLatestBlock();
 
   for (var module of modules) {
     const file = fs.readFileSync(`./src/mods/${module}/source.yaml`, 'utf8');
