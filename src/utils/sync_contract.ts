@@ -18,13 +18,13 @@ export const syncContract = async (contractAddress: string, _startBlock: number,
     try {
       lastestBlock = (await kaiWeb3.getBlockNumber()) - 1;
       if (lastestBlock < startBlock) {
-        sleep(5000);
+        await sleep(5000);
         continue;
       }
     } catch (err) {
       const d = new Date();
       console.log(d.toString(), ': sync contract ' + contractAddress + ' err: ', err.message);
-      sleep(10000);
+      await sleep(10000);
       continue;
     }
 
@@ -62,7 +62,7 @@ export const syncContractv2 = async (contractAddress: string, _startBlock: numbe
     try {
       lastestBlock = (await kaiWeb3.getBlockNumber()) - 1;
       if (lastestBlock < startBlock) {
-        sleep(5000);
+        await sleep(5000);
         continue;
       }
 
