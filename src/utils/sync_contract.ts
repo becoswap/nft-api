@@ -17,7 +17,7 @@ export const syncContractv2 = async (contractAddress: string, _startBlock: numbe
   let lastestBlock = 0;
   while (true) {
     try {
-      lastestBlock = getLatestBlock();
+      lastestBlock = getLatestBlock() - 1;
       if (lastestBlock < startBlock) {
         await sleep(5000);
         continue;
