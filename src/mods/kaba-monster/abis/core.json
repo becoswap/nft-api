@@ -71,13 +71,13 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "_robotId",
+        "name": "monsterId",
         "type": "uint256"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "_owner",
+        "name": "owner",
         "type": "address"
       },
       {
@@ -95,7 +95,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "_genes",
+        "name": "genes",
         "type": "uint256"
       }
     ],

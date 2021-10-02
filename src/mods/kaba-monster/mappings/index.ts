@@ -55,7 +55,7 @@ interface Property {
 function getInfo(event) {
   const args = event.args;
 
-  const genes = decode(new BigNumber(args._genes.toString()));
+  const genes = decode(new BigNumber(args.genes.toString()));
 
   const properties: Array<Property> = [
     {
@@ -102,7 +102,7 @@ function getInfo(event) {
       type: 'stats',
       name: 'strength',
       intValue: genes.strength,
-      maxValue: 47,
+      maxValue: 57,
     },
 
     // parts
@@ -161,12 +161,13 @@ function getInfo(event) {
 
   return {
     fileUrl: genes.image,
+    thumbnail: genes.thumb,
     properties,
   };
 }
 
 export const handleCreate = async event => {
-  const nftID = event.args._robotId.toNumber();
+  const nftID = event.args.monsterId.toNumber();
   const info = getInfo(event);
   const matronId = event.args.matronId.toString();
   const sireId = event.args.sireId.toString();
@@ -219,8 +220,8 @@ export const handleCreate = async event => {
   await NFT.create(
     {
       id: getNftId(NFT_TYPE, nftID),
-      creator: event.args._owner,
-      owner: event.args._owner,
+      creator: event.args.owner,
+      owner: event.args.owner,
       votes: 0,
       nftType: NFT_TYPE,
       nftId: nftID,
@@ -259,6 +260,7 @@ export const handleTransfer = async event => {
   const tokenId = event.args.tokenId.toNumber();
   const nftID = getNftId(NFT_TYPE, tokenId);
   const nft = await NFT.findByPk(nftID);
+
   if (nft && !bidContract[event.args.to]) {
     nft.setAttributes({ owner: event.args.to });
     await nft.save();
