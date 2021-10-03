@@ -293,7 +293,6 @@ interface Genes {
   card: string;
   image: string;
   thumb: string;
-  thumbnail: string;
   eye: Part;
   head: Part;
   horn: Part;
@@ -319,7 +318,6 @@ const decode = (genes): Genes => {
   const traits = _decode(genes);
 
   return {
-    thumbnail: '',
     energy:
       baseStats[traits.cardId][1] + bodyStats.horn[traits.horn % 6] + bodyStats.ear[traits.ear % 6],
     speed: baseStats[traits.cardId][2] + bodyStats.eye[traits.eye % 6],

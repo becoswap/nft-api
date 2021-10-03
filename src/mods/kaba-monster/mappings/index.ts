@@ -102,7 +102,7 @@ function getInfo(event) {
       type: 'stats',
       name: 'strength',
       intValue: genes.strength,
-      maxValue: 57,
+      maxValue: 67,
     },
 
     // parts
