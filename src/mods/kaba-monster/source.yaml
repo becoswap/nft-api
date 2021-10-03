@@ -1,0 +1,15 @@
+dataSources:
+  - name: kaba
+    source:
+      address: "0xc66BA8C9E149B5d3977Dfa73cE8DDEDEB90C28aA"
+      startBlock: 4601955
+      abi: "./abis/core.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Pregnant
+          handler: handlePregnant
+        - event: MonsterCreated
+          handler: handleCreate
+        - event: Transfer
+          handler: handleTransfer
