@@ -8,7 +8,9 @@ const Property = database.models.nft_property;
 const NFT = database.models.nft;
 const Collection = database.models.collection;
 
-const bidContract = {};
+const bidContract = {
+  '0xD4A41D7F87069528a72E99C020de1395eDB5135B': true,
+};
 
 const NFT_TYPE = 4;
 
