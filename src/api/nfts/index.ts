@@ -192,12 +192,12 @@ async function count(ctx) {
 
 async function update(ctx) {
   const nft = await NFT.findByPk(ctx.params.id);
-  if (!nft) {
+  if (!nft || nft.nftType != 2) {
     ctx.status = 404;
     ctx.message = 'nft not foud';
   }
 
-  nft.setAttributes(ctx.request.body);
+  nft.status = ctx.request.body.status;
   await nft.save();
   ctx.body = nft;
 }
