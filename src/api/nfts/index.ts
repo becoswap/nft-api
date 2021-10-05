@@ -1,15 +1,15 @@
-import { Op } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
 import sequelize from '../../database';
 import database from '../../database';
 import { buildQuery } from '../../utils/query';
 import { DEFAULT_LIMIT, MAX_LIMIT } from '../../constants';
-import { escape } from 'sqlstring';
 
 const NFT = database.models.nft;
 const User = database.models.user;
 const Property = database.models.nft_property;
 
 function addPropertyFilter(
+  replacements,
   valueField: string,
   innerJoins,
   i: number,
@@ -17,9 +17,7 @@ function addPropertyFilter(
   condition: string,
   rawValue: string
 ) {
-  var values: any = rawValue.split(',').map(v => {
-    return escape(v);
-  });
+  var values: any = rawValue.split(',');
 
   let op = '=';
   switch (condition) {
@@ -35,19 +33,19 @@ function addPropertyFilter(
   }
 
   if (op != 'in') {
-    values = values[0];
-  } else {
-    values = `(${values.join(',')})`;
+    values = '';
   }
 
   innerJoins.push(`
             INNER JOIN nft_properties AS np_${i} 
             ON nfts.id=np_${i}."nftId" 
-            AND np_${i}.name=${name} AND np_${i}."${valueField}" ${op} ${values}`);
+            AND np_${i}.name=? AND np_${i}."${valueField}"  ${op} (?)`);
+  replacements.push(name, values);
 }
 
 async function list(ctx) {
   const innerJoins = [];
+  let replacements = [];
   const limit = ctx.query.limit || DEFAULT_LIMIT;
   if (limit > MAX_LIMIT) {
     throw Error('limit must be less than ' + MAX_LIMIT);
@@ -58,20 +56,20 @@ async function list(ctx) {
     i++;
     if (field.startsWith('int_')) {
       const keys = field.replace('int_', '').split('__');
-      const name = escape(keys[0]);
+      const name = keys[0];
       if (keys.length == 2) {
-        addPropertyFilter('intValue', innerJoins, i, name, keys[1], ctx.query[field]);
+        addPropertyFilter(replacements, 'intValue', innerJoins, i, name, keys[1], ctx.query[field]);
       } else {
-        addPropertyFilter('intValue', innerJoins, i, name, 'in', ctx.query[field]);
+        addPropertyFilter(replacements, 'intValue', innerJoins, i, name, 'in', ctx.query[field]);
       }
       delete ctx.query[field];
     } else if (field.startsWith('string_')) {
       const keys = field.replace('string_', '').split('__');
-      const name = escape(keys[0]);
+      const name = keys[0];
       if (keys.length == 2) {
-        addPropertyFilter('value', innerJoins, i, name, keys[1], ctx.query[field]);
+        addPropertyFilter(replacements, 'value', innerJoins, i, name, keys[1], ctx.query[field]);
       } else {
-        addPropertyFilter('value', innerJoins, i, name, 'in', ctx.query[field]);
+        addPropertyFilter(replacements, 'value', innerJoins, i, name, 'in', ctx.query[field]);
       }
       delete ctx.query[field];
     }
@@ -80,44 +78,54 @@ async function list(ctx) {
   const whereAnd = [];
 
   if (ctx.query['nftType']) {
-    whereAnd.push(`nfts."nftType" = ${escape(ctx.query['nftType'])}`);
+    whereAnd.push(`nfts."nftType" = ?`);
+    replacements.push(ctx.query['nftType']);
   }
 
   if (ctx.query['onSale'] != undefined) {
-    whereAnd.push(`nfts."onSale" = ${escape(ctx.query['onSale'])}`);
+    whereAnd.push(`nfts."onSale" =?`);
+    replacements.push(ctx.query['onSale']);
   }
 
   if (ctx.query['owner']) {
-    whereAnd.push(`nfts."owner" = ${escape(ctx.query['owner'])}`);
+    whereAnd.push(`nfts."owner" =?`);
+    replacements.push(ctx.query['owner']);
   }
 
   if (ctx.query['creator']) {
-    whereAnd.push(`nfts."creator" = ${escape(ctx.query['creator'])}`);
+    whereAnd.push(`nfts."creator" = ?`);
+    replacements.push(ctx.query['creator']);
   }
 
   if (ctx.query.status) {
-    whereAnd.push(`nfts."status" = ${escape(ctx.query.status)}`);
+    whereAnd.push(`nfts."status" = ?`);
+    replacements.push(ctx.query['status']);
   }
 
   if (ctx.query.q) {
     const q = `%${ctx.query.q}%`;
-    whereAnd.push(`nfts."name" ilike ${escape(q)}`);
+    whereAnd.push(`nfts."name" ilike ?`);
+    replacements.push(q);
   }
 
   if (ctx.query['ids']) {
-    const ids = ctx.query['ids']
-      .split(',')
-      .map(id => escape(id))
-      .join(',');
-    whereAnd.push(`nfts."id" in (${ids})`);
+    const ids = ctx.query['ids'].split(',').join(',');
+    whereAnd.push(`nfts."id" in (?)`);
+
+    replacements.push(ids);
   }
 
   if (whereAnd.length > 0) {
     innerJoins.push(`
             WHERE ${whereAnd.join(' AND ')} `);
   }
-  const count = await sequelize.query('SELECT count(nfts.id) FROM nfts ' + innerJoins.join(' '));
 
+  console.log(replacements, innerJoins.join(' '));
+  const count = await sequelize.query('SELECT count(nfts.id) FROM nfts ' + innerJoins.join(' '), {
+    type: QueryTypes.SELECT,
+    replacements,
+  });
+  console.log(1, count);
   if (ctx.query.orderBy) {
     let orderDirection = 'desc';
     if (ctx.query.orderDirection === 'asc') {
@@ -125,20 +133,27 @@ async function list(ctx) {
     }
 
     if (['votes', 'price', 'createdAt', 'id', 'nftId'].includes(ctx.query.orderBy)) {
-      innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" ${orderDirection}`);
+      if (orderDirection == 'asc') {
+        innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" asc`);
+      } else {
+        innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" desc`);
+      }
     }
   }
 
   if (limit) {
-    innerJoins.push(`LIMIT ${escape(limit)} OFFSET ${escape(ctx.query.offset || 0)}`);
+    innerJoins.push(`LIMIT ? OFFSET ?`);
+    replacements.push(limit, ctx.query.offset);
   }
 
-  const rows = await sequelize.query('SELECT nfts.id FROM nfts ' + innerJoins.join(' '));
-
+  const rows = await sequelize.query('SELECT nfts.id FROM nfts ' + innerJoins.join(' '), {
+    type: QueryTypes.SELECT,
+    replacements,
+  });
   const nfts = await NFT.findAll({
     where: {
       id: {
-        [Op.in]: rows[0].map(r => r.id),
+        [Op.in]: rows.map(r => r.id),
       },
     },
     include: [
@@ -163,8 +178,8 @@ async function list(ctx) {
 
   ctx.status = 200;
   ctx.body = {
-    count: Number(count[0][0].count),
-    rows: rows[0].map(r => nftById[r.id]),
+    count: Number(count[0].count),
+    rows: rows.map(r => nftById[r.id]),
   };
 }
 
