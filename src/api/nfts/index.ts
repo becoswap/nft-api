@@ -33,7 +33,9 @@ function addPropertyFilter(
   }
 
   if (op != 'in') {
-    values = '';
+    values = values[0];
+  } else {
+    values = values.join(',');
   }
 
   innerJoins.push(`
@@ -120,12 +122,10 @@ async function list(ctx) {
             WHERE ${whereAnd.join(' AND ')} `);
   }
 
-  console.log(replacements, innerJoins.join(' '));
   const count = await sequelize.query('SELECT count(nfts.id) FROM nfts ' + innerJoins.join(' '), {
     type: QueryTypes.SELECT,
     replacements,
   });
-  console.log(1, count);
   if (ctx.query.orderBy) {
     let orderDirection = 'desc';
     if (ctx.query.orderDirection === 'asc') {
