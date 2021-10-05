@@ -34,8 +34,6 @@ function addPropertyFilter(
 
   if (op != 'in') {
     values = values[0];
-  } else {
-    values = values.join(',');
   }
 
   innerJoins.push(`
@@ -111,7 +109,7 @@ async function list(ctx) {
   }
 
   if (ctx.query['ids']) {
-    const ids = ctx.query['ids'].split(',').join(',');
+    const ids = ctx.query['ids'].split(',');
     whereAnd.push(`nfts."id" in (?)`);
 
     replacements.push(ids);
