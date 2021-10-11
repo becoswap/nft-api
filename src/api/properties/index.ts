@@ -1,20 +1,14 @@
 import { QueryTypes } from 'sequelize';
+import NodeCache from 'node-cache';
 import sequelize from '../../database';
 const Collection = sequelize.models.collection;
+
+const myCache = new NodeCache();
 
 async function stats(ctx) {
   let replacements = [];
   const whereArr = [];
   const nftType = ctx.query.nftType || 3;
-  const collection = await Collection.findByPk(nftType);
-
-  if (!collection) {
-    ctx.status = 400;
-    ctx.body = {
-      message: 'Collection not found',
-    };
-    return;
-  }
 
   whereArr.push(`nfts."nftType" = ?`);
   replacements.push(nftType);
@@ -27,6 +21,23 @@ async function stats(ctx) {
   if (ctx.query.creator) {
     whereArr.push(`nfts."creator" = ?`);
     replacements.push(ctx.query.creator);
+  }
+
+  const cacheKey = replacements.join(':');
+  const cacheValue = myCache.get(cacheKey);
+  if (cacheValue) {
+    ctx.body = cacheValue;
+    return;
+  }
+
+  const collection = await Collection.findByPk(nftType);
+
+  if (!collection) {
+    ctx.status = 400;
+    ctx.body = {
+      message: 'Collection not found',
+    };
+    return;
   }
 
   const whereStr = whereArr.join(' and  ');
@@ -77,6 +88,7 @@ async function stats(ctx) {
       .filter(a => a.value.max > 0),
   };
 
+  myCache.set(cacheKey, data, 30000);
   ctx.body = data;
 }
 
