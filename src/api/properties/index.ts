@@ -3,7 +3,7 @@ import NodeCache from 'node-cache';
 import sequelize from '../../database';
 const Collection = sequelize.models.collection;
 
-const myCache = new NodeCache();
+const myCache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
 
 async function stats(ctx) {
   let replacements = [];
@@ -87,8 +87,7 @@ async function stats(ctx) {
       })
       .filter(a => a.value.max > 0),
   };
-
-  myCache.set(cacheKey, data, 30000);
+  myCache.set(cacheKey, data);
   ctx.body = data;
 }
 
