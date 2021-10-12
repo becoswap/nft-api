@@ -1,9 +1,14 @@
+import { MAX_LIMIT } from '../../constants';
 import database from '../../database';
 const Event = database.models.event;
 
 const eventResolver = {
   Query: {
     async events(root, args) {
+      if (args.limit > MAX_LIMIT) {
+        throw Error('limit must be less than ' + MAX_LIMIT);
+      }
+
       return Event.findAll({
         where: args.where,
         limit: args.limit,
