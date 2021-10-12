@@ -1,2 +1,3 @@
+import eventSchema from './event';
 import nftSchema from './nft';
-export default [nftSchema];
+export default [nftSchema, eventSchema];

@@ -41,10 +41,11 @@ const schema = buildSchema(`
     }
 
     type Query {
-        nfts(orderBy: OrderBy, orderDirection: OrderDirection, offset: Int, limit: Int, where: NftFilter): [Nft!]
+        nfts(orderBy: NFTOrderBy, orderDirection: OrderDirection, offset: Int, limit: Int, where: NftFilter): [Nft!]
+        nftCount(where: NftFilter): Int!
     }
 
-    enum OrderBy {
+    enum NFTOrderBy {
         nftId,
         price,
         votes,
