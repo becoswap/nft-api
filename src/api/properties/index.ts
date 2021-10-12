@@ -1,6 +1,7 @@
 import { QueryTypes } from 'sequelize';
 import NodeCache from 'node-cache';
 import sequelize from '../../database';
+import md5 from 'blueimp-md5';
 const Collection = sequelize.models.collection;
 
 const myCache = new NodeCache({ stdTTL: 60, checkperiod: 120 });
@@ -23,8 +24,9 @@ async function stats(ctx) {
     replacements.push(ctx.query.creator);
   }
 
-  const cacheKey = replacements.join(':');
+  const cacheKey = md5(replacements.join(':') + whereArr.join(':'));
   const cacheValue = myCache.get(cacheKey);
+  console.log(cacheKey);
   if (cacheValue) {
     ctx.body = cacheValue;
     return;
