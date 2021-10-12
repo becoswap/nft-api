@@ -26,7 +26,6 @@ async function stats(ctx) {
 
   const cacheKey = md5(replacements.join(':') + whereArr.join(':'));
   const cacheValue = myCache.get(cacheKey);
-  console.log(cacheKey);
   if (cacheValue) {
     ctx.body = cacheValue;
     return;
