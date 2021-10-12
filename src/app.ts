@@ -13,8 +13,8 @@ require('dotenv').config();
 
 import sequelize from './database';
 
-import typeDefs from './graphql/schema';
-import resolvers from './graphql/root';
+import typeDefs from './graphql/schemas';
+import resolvers from './graphql/resolvers';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 
 const schema = makeExecutableSchema({
