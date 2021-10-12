@@ -8,6 +8,11 @@ const bidSchema = buildSchema(`
         address: String!
         price: String!
         createdAt: String!
+        nft: Nft
+    }
+
+    type Nft {
+        id: ID!
     }
 
     enum OrderDirection {
@@ -24,6 +29,11 @@ const bidSchema = buildSchema(`
         nftId: String
         bidder: String
         address: String
+        nft: BidNftFilter
+    }
+
+    input BidNftFilter {
+        owner: String
     }
 
     type Query {

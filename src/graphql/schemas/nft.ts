@@ -55,7 +55,7 @@ const schema = buildSchema(`
     input NftFilter {
         id: ID
         id__in: [ID]
-        nftType: String
+        nftType: Int
         nftId: Int
         onSale: Boolean
         status: Int
