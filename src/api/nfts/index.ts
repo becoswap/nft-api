@@ -3,10 +3,14 @@ import sequelize from '../../database';
 import database from '../../database';
 import { buildQuery } from '../../utils/query';
 import { DEFAULT_LIMIT, MAX_LIMIT } from '../../constants';
+import NodeCache from 'node-cache';
+import md5 from 'blueimp-md5';
 
 const NFT = database.models.nft;
 const User = database.models.user;
 const Property = database.models.nft_property;
+
+const nftCache = new NodeCache({ stdTTL: 5, checkperiod: 10 });
 
 function addPropertyFilter(
   replacements,
@@ -44,6 +48,13 @@ function addPropertyFilter(
 }
 
 async function list(ctx) {
+  const cacheKey = md5(JSON.stringify(ctx.query));
+  const cacheValue = nftCache.get(cacheKey);
+  if (cacheValue) {
+    ctx.body = cacheValue;
+    return;
+  }
+
   const innerJoins = [];
   let replacements = [];
   const limit = ctx.query.limit || DEFAULT_LIMIT;
@@ -175,10 +186,13 @@ async function list(ctx) {
   }
 
   ctx.status = 200;
-  ctx.body = {
+
+  const body = {
     count: Number(count[0].count),
     rows: rows.map(r => nftById[r.id]),
   };
+  nftCache.set(cacheKey, JSON.stringify(body));
+  ctx.body = body;
 }
 
 async function get(ctx) {
