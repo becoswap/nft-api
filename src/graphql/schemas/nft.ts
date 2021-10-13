@@ -72,10 +72,10 @@ const schema = buildSchema(`
 
     input IntProperyFilter {
         name: String!
-        ranges: Range
+        ranges: RangeFilter
     }
 
-    input Range {
+    input RangeFilter {
         min: Int!
         max: Int!
     }
