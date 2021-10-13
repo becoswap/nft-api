@@ -19,7 +19,10 @@ const propertyResolver = {
       }
 
       let properties = await sequelize.query(
-        `select count(nft_properties.name),nft_properties."value", nft_properties.name from nft_properties inner join nfts on nft_properties."nftId"=nfts.id ${whereStr} where "type" in ('property', 'other_string') and "value" IS NOT NULL group by nft_properties.name,nft_properties."value"`,
+        `select count(nft_properties.name),nft_properties."value", nft_properties.name 
+        from nft_properties inner join nfts on nft_properties."nftId"=nfts.id ${whereStr} 
+        where "type" in ('property', 'other_string') and "value" IS NOT NULL 
+        group by nft_properties.name,nft_properties."value"`,
         { type: QueryTypes.SELECT, replacements }
       );
 
@@ -43,23 +46,27 @@ const propertyResolver = {
         };
       });
       properties = await sequelize.query(
-        `select  min(nft_properties."intValue"), max(nft_properties."intValue"), nft_properties."name" from nft_properties inner join nfts on nft_properties."nftId"=nfts.id ${whereStr} where "type" in ('stats', 'level', 'other') group by nft_properties.name`,
+        `
+        select  min(nft_properties."intValue"), max(nft_properties."intValue"), nft_properties."name" 
+        from nft_properties inner join nfts on nft_properties."nftId"=nfts.id ${whereStr} 
+        where "type" in ('stats', 'level', 'other')
+        group by nft_properties.name
+        HAVING MAX(nft_properties."intValue") > 0
+        `,
         { type: QueryTypes.SELECT, replacements }
       );
 
       return {
         stringProperties: stringProperties,
-        intProperties: properties
-          .map(p => {
-            return {
-              key: p.name,
-              value: {
-                min: p.min,
-                max: p.max,
-              },
-            };
-          })
-          .filter(a => a.value.max > 0),
+        intProperties: properties.map(p => {
+          return {
+            key: p.name,
+            value: {
+              min: p.min,
+              max: p.max,
+            },
+          };
+        }),
       };
     },
   },

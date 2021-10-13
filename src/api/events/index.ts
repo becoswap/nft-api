@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import database from '../../database';
 import { buildQuery } from '../../utils/query';
 
@@ -16,6 +17,26 @@ async function list(ctx) {
   }
 
   const query = buildQuery(ctx, Event);
+
+  if (ctx.query.from) {
+    delete query.where.from;
+    query.where[Op.or] = [
+      {
+        from: ctx.query.from,
+      },
+      {
+        metadata: {
+          buyer: ctx.query.from,
+        },
+      },
+      {
+        metadata: {
+          seller: ctx.query.from,
+        },
+      },
+    ];
+  }
+
   const nfts = await Event.findAndCountAll({
     ...query,
     include,

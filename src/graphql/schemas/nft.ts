@@ -41,7 +41,7 @@ const schema = buildSchema(`
     }
 
     type Query {
-        nfts(orderBy: NFTOrderBy, orderDirection: OrderDirection, offset: Int, limit: Int, where: NftFilter): [Nft!]
+        nfts(orderBy: NFTOrderBy = createdAt, orderDirection: OrderDirection = DESC, offset: Int = 0, limit: Int = 30, where: NftFilter): [Nft!]
         nftCount(where: NftFilter): Int!
     }
 
