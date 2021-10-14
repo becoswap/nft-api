@@ -38,6 +38,10 @@ const bidResolver = {
       });
     },
 
+    async bid(root, args) {
+      return Bid.findByPk(args.id);
+    },
+
     async bidCount(root, args) {
       args.where = args.where || {};
       const nftWhere = args.where ? args.where.nft : undefined;

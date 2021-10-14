@@ -37,6 +37,7 @@ const bidSchema = buildSchema(`
     }
 
     type Query {
+        bid(id: ID!): Bid
         bidCount(where: BidFilter): Int!
         bids(orderBy: BidOrderBy = createdAt, orderDirection: OrderDirection = DESC, offset: Int = 0, limit: Int = 30, where: BidFilter): [Bid!]
     }

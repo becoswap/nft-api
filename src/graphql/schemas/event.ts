@@ -47,6 +47,7 @@ const eventSchema = buildSchema(`
     }
 
     type Query {
+        event(id: ID!): Event
         eventCount(where: EventFilter): Int!
         events(orderBy: EventOrderBy = createdAt, orderDirection: OrderDirection = DESC, offset: Int = 0, limit: Int = 30, where: EventFilter): [Event!]
     }

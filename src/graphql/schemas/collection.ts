@@ -39,6 +39,7 @@ const collectionSchema = buildSchema(`
     }
 
     type Query {
+        collection(id: ID!): Collection
         collectionCount(where: CollectionFilter): Int!
         collections(orderBy: CollectionOrderBy = createdAt, orderDirection: OrderDirection = DESC, offset: Int = 0, limit: Int = 30, where: CollectionFilter): [Collection!]
     }

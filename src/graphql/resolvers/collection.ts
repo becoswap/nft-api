@@ -20,6 +20,10 @@ const collectionResolver = {
       });
     },
 
+    async collection(root, args) {
+      return Collection.findByPk(args.id);
+    },
+
     async collectionCount(root, args) {
       return Collection.count({
         where: args.where,

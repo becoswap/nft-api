@@ -25,6 +25,7 @@ const userSchema = buildSchema(`
     }
 
     type Query {
+        user(id: ID!): User
         userCount(where: UserFilter): Int!
         users(orderBy: UserOrderBy = createdAt, orderDirection: OrderDirection = DESC, offset: Int = 0, limit: Int = 30, where: UserFilter): [User!]
     }

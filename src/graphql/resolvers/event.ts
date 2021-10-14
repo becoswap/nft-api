@@ -20,6 +20,10 @@ const eventResolver = {
       });
     },
 
+    async event(root, args) {
+      return Event.findByPk(args.id);
+    },
+
     async eventCount(root, args) {
       return Event.count({
         where: args.where,

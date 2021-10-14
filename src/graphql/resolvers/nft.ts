@@ -72,6 +72,27 @@ function buildQuery(args) {
 
 const nftResolver = {
   Query: {
+    async nft(root, args) {
+      return await NFT.findOne({
+        where: {
+          id: args.id,
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['name', 'avatar', 'website'],
+            as: 'creatorInfo',
+          },
+
+          {
+            model: Property,
+            as: 'properties',
+            attributes: ['name', 'type', 'intValue', 'maxValue', 'value', 'image'],
+          },
+        ],
+      });
+    },
+
     async nftCount(root, args) {
       const { replacements, joins } = buildQuery(args);
       const rows = await sequelize.query('SELECT count(nfts.id) FROM nfts ' + joins.join(' '), {

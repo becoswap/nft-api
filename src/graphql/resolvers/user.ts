@@ -25,6 +25,10 @@ const userResolver = {
         where: args.where,
       });
     },
+
+    async user(root, args) {
+      return User.findByPk(args.id);
+    },
   },
 };
 

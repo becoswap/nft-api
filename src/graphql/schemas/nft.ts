@@ -43,6 +43,7 @@ const schema = buildSchema(`
     type Query {
         nfts(orderBy: NFTOrderBy = createdAt, orderDirection: OrderDirection = DESC, offset: Int = 0, limit: Int = 30, where: NftFilter): [Nft!]
         nftCount(where: NftFilter): Int!
+        nft(id: ID!): Nft
     }
 
     enum NFTOrderBy {
@@ -61,16 +62,16 @@ const schema = buildSchema(`
         status: Int
         creator: String
         owner: String
-        stringProperties: [StringProperyFilter]
-        intProperties: [IntProperyFilter]
+        stringProperties: [StringPropertyFilter]
+        intProperties: [IntPropertyFilter]
     }
 
-    input StringProperyFilter {
+    input StringPropertyFilter {
         name: String!
         values: [String!]
     }
 
-    input IntProperyFilter {
+    input IntPropertyFilter {
         name: String!
         ranges: RangeFilter
     }
