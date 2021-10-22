@@ -2,6 +2,7 @@ import database from '../../../database';
 import { getNftId } from '../../../utils/nft';
 import md5 from 'blueimp-md5';
 import BigNumber from 'bignumber.js';
+import { Event } from '@ethersproject/contracts';
 
 const Event = database.models.event;
 const Nft = database.models.nft;
@@ -86,7 +87,10 @@ const loadNft = async (id: string) => {
   return nft;
 };
 
-export async function handleTrade(event) {
+export async function handleTrade(event: Event) {
+  const block = await event.getBlock();
+  const createdAt = new Date(block.timestamp * 1000);
+
   await createEvent(event, {
     seller: event.args.seller,
     buyer: event.args.buyer,
@@ -102,6 +106,7 @@ export async function handleTrade(event) {
     quoteToken: '',
     onSale: false,
     price: 0,
+    soldAt: createdAt,
   });
 
   await nft.save();
@@ -115,6 +120,9 @@ export async function handleTrade(event) {
 }
 
 export async function handleAsk(event) {
+  const block = await event.getBlock();
+  const createdAt = new Date(block.timestamp * 1000);
+
   await createEvent(event, {
     price: event.args.price.toString(),
   });
@@ -126,6 +134,7 @@ export async function handleAsk(event) {
     exchangeAddress: event.address,
     quoteToken: QUOTE_ADDRESSES[event.address],
     onSale: true,
+    listedAt: createdAt,
   });
   await nft.save();
 }
@@ -140,6 +149,7 @@ export async function handleCancelSellToken(event) {
     quoteToken: '',
     onSale: false,
     price: 0,
+    listedAt: null,
   });
   await nft.save();
 }
