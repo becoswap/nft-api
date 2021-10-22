@@ -107,6 +107,7 @@ export async function handleTrade(event: Event) {
     onSale: false,
     price: 0,
     soldAt: createdAt,
+    listedAt: null,
   });
 
   await nft.save();
