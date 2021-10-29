@@ -1,7 +1,7 @@
 dataSources:
   - name: kaba
     source:
-      address: "0x45Ae66C0ea5C51a244bdefD3ec8E84df808E5153"
+      address: "0xfF5cC9C3eE6B1ACDe92301205dc188Df061C08e8"
       startBlock: 5042907
       abi: "./abis/core.json"
     mapping:
