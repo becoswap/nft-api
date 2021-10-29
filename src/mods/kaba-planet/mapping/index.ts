@@ -40,18 +40,18 @@ const nameMaps = {
 const WIDTH = 5000;
 
 export const handleCreate = async (e: Event) => {
-  const nftID = e.args.monsterId.toNumber();
+  const nftId = e.args.monsterId.toNumber();
 
-  const x = nftID % WIDTH;
-  const y = Math.floor(nftID / WIDTH);
+  const x = nftId % WIDTH;
+  const y = Math.floor(nftId / WIDTH);
   const width =  WIDTH/ 2
   const name = `PLANET (${x - width}, ${y - width})`
 
   const dataToCreate = {
-    id: getNftId(NFT_TYPE, nftID),
+    id: getNftId(NFT_TYPE, nftId),
     name,
     nftType: NFT_TYPE,
-    nftId: e.args.planetId,
+    nftId,
     creator: e.args.owner,
     owner: e.args.owner,
     votes: 0,
