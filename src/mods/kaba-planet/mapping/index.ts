@@ -40,7 +40,7 @@ const nameMaps = {
 const WIDTH = 5000;
 
 export const handleCreate = async (e: Event) => {
-  const nftId = e.args.planet.toNumber();
+  const nftId = e.args.planetId.toNumber();
 
   const x = nftId % WIDTH;
   const y = Math.floor(nftId / WIDTH);
