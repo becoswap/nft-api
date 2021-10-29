@@ -12,6 +12,8 @@ const Property = database.models.nft_property;
 
 const nftCache = new NodeCache({ stdTTL: 5, checkperiod: 10 });
 
+const ALLOW_SORT_FIELDS = ['votes', 'price', 'createdAt', 'id', 'nftId', 'listedAt', 'soldAt'];
+
 function addPropertyFilter(
   replacements,
   valueField: string,
@@ -141,7 +143,7 @@ async function list(ctx) {
       orderDirection = 'asc';
     }
 
-    if (['votes', 'price', 'createdAt', 'id', 'nftId'].includes(ctx.query.orderBy)) {
+    if (ALLOW_SORT_FIELDS.includes(ctx.query.orderBy)) {
       if (orderDirection == 'asc') {
         innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" asc`);
       } else {

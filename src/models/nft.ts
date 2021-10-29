@@ -78,6 +78,16 @@ module.exports = sequelize => {
         type: DataTypes.JSONB,
       },
 
+      listedAt: {
+        allowNull: true,
+        type: DataTypes.DATE,
+      },
+
+      soldAt: {
+        allowNull: true,
+        type: DataTypes.DATE,
+      },
+
       onSale: {
         allowNull: false,
         default: false,
@@ -111,6 +121,12 @@ module.exports = sequelize => {
         },
         {
           fields: ['price'],
+        },
+        {
+          fields: ['soldAt'],
+        },
+        {
+          fields: ['listedAt'],
         },
         {
           fields: ['attributes'],
