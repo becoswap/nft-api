@@ -90,8 +90,3 @@ dataSources:
           handler: handleCancelBidToken
         - event: CancelSellToken
           handler: handleCancelSellToken
-  
-  
-
-          
-0x77b8677c48Ff208F42010a89A4451755756f8ae7
