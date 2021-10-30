@@ -9,12 +9,10 @@ const Collection = database.models.collection;
 
 const NFT_TYPE = 5;
 
-const BID_CONTRACTS = [
-
-]
+const BID_CONTRACTS = [];
 
 function isBidContract(addr) {
-  return BID_CONTRACTS.indexOf(addr) > -1
+  return BID_CONTRACTS.indexOf(addr) > -1;
 }
 
 const PROPERTY_KEY = {
@@ -39,64 +37,65 @@ const nameMaps = {
 
 const WIDTH = 5000;
 
-
 const createCollection = async () => {
   await Collection.findOrCreate({
     where: {
-      id: NFT_TYPE
+      id: NFT_TYPE,
     },
     defaults: {
       id: NFT_TYPE,
-      name: "KABA Planet",
-      avatar: "https://pbs.twimg.com/profile_images/1428654572717756416/YXe-Eret_400x400.jpg",
-      banner: "https://pbs.twimg.com/profile_banners/1428654446699896833/1630293635/1500x500",
-      description: "Kripto Galaxy Battle is a NFT blockchain based game where you can Play-to-earn. \r\nDeveloped on #KardiaChain by Cyforce Game Studio x BecoSwap",
-      website: "https://kriptobattle.com/",
-      contract: "0x8FC2Cc14A4a1fcf7dACf22A1Fa05f546213cBB19",
+      name: 'KABA Planet',
+      avatar: 'https://pbs.twimg.com/profile_images/1428654572717756416/YXe-Eret_400x400.jpg',
+      banner: 'https://pbs.twimg.com/profile_banners/1428654446699896833/1630293635/1500x500',
+      description:
+        'Kripto Galaxy Battle is a NFT blockchain based game where you can Play-to-earn. \r\nDeveloped on #KardiaChain by Cyforce Game Studio x BecoSwap',
+      website: 'https://kriptobattle.com/',
+      contract: '0x8FC2Cc14A4a1fcf7dACf22A1Fa05f546213cBB19',
       meta: {
         sortOptions: [
           {
-            "label": "Lowest Price",
-            "value": "price:asc"
+            label: 'Lowest Price',
+            value: 'price:asc',
           },
           {
-            "label": "Highest Price",
-            "value": "price:desc"
+            label: 'Highest Price',
+            value: 'price:desc',
           },
           {
-            "label": "Lowest ID",
-            "value": "nftId:asc"
+            label: 'Lowest ID',
+            value: 'nftId:asc',
           },
           {
-            "label": "Highest ID",
-            "value": "nftId:desc"
+            label: 'Highest ID',
+            value: 'nftId:desc',
           },
           {
-            "label": "Recently Sold",
-            "value": "soldAt:desc"
+            label: 'Recently Sold',
+            value: 'soldAt:desc',
           },
           {
-            "label": "Recently Listed",
-            "value": "listedAt:desc"
+            label: 'Recently Listed',
+            value: 'listedAt:desc',
           },
           {
-            "label": "Latest",
-            "value": "createdAt"
-          }
-        ]
-      }
-    }
-  })
-}
-createCollection()
+            label: 'Latest',
+            value: 'createdAt',
+          },
+        ],
+      },
+    },
+  });
+};
+createCollection();
 
 export const handleCreate = async (e: Event) => {
   const nftId = e.args.planetId.toNumber();
 
   const x = nftId % WIDTH;
   const y = Math.floor(nftId / WIDTH);
-  const width =  WIDTH/ 2
-  const name = `PLANET (${x - width}, ${y - width})`
+  const width = WIDTH / 2;
+  const name = `PLANET (${x - width}, ${y - width})`;
+  const imageId = `${e.args.cardId}-${e.args.rarity}-${nftId}`;
 
   const dataToCreate = {
     id: getNftId(NFT_TYPE, nftId),
@@ -108,6 +107,8 @@ export const handleCreate = async (e: Event) => {
     votes: 0,
     status: 1,
     onSale: false,
+    fileUrl: `https://images.kriptogaming.com/planet/${imageId}.png`,
+    thumbnail: `https://images.kriptogaming.com/planet/thumb/${imageId}.png`,
     properties: [
       {
         type: PROPERTY_TYPE.STATS,
