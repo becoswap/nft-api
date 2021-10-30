@@ -2,6 +2,7 @@ import database from '../../../database';
 import { getNftId } from '../../../utils/nft';
 import md5 from 'blueimp-md5';
 import BigNumber from 'bignumber.js';
+import { Event } from '@ethersproject/contracts';
 
 const Event = database.models.event;
 const Nft = database.models.nft;
@@ -13,6 +14,7 @@ const bidType = {
   kaba: '0xd504F8A8975527689E9c8727CA37a0FFCD1351cF',
   kabaKai: '0x936EC122D6F0e204aCA2E0eab2394d7305fbB6f8',
   kabaMonster: '0x38375787094c984b0bf63b809F66E8C77988d1aB',
+  kabaPlanet: '0x77b8677c48Ff208F42010a89A4451755756f8ae7',
 };
 
 const beco = '0x2Eddba8b949048861d2272068A94792275A51658';
@@ -22,6 +24,7 @@ const NFT_TYPES = {
   [bidType.kaba]: 3,
   [bidType.kabaKai]: 3,
   [bidType.kabaMonster]: 4,
+  [bidType.kabaPlanet]: 5,
 };
 
 const QUOTE_ADDRESSES = {
@@ -29,6 +32,7 @@ const QUOTE_ADDRESSES = {
   [bidType.kaba]: beco,
   [bidType.kabaKai]: '',
   [bidType.kabaMonster]: '',
+  [bidType.kabaPlanet]: '',
 };
 
 function getBidId(event) {
@@ -86,7 +90,10 @@ const loadNft = async (id: string) => {
   return nft;
 };
 
-export async function handleTrade(event) {
+export async function handleTrade(event: Event) {
+  const block = await event.getBlock();
+  const createdAt = new Date(block.timestamp * 1000);
+
   await createEvent(event, {
     seller: event.args.seller,
     buyer: event.args.buyer,
@@ -102,6 +109,8 @@ export async function handleTrade(event) {
     quoteToken: '',
     onSale: false,
     price: 0,
+    soldAt: createdAt,
+    listedAt: null,
   });
 
   await nft.save();
@@ -115,6 +124,9 @@ export async function handleTrade(event) {
 }
 
 export async function handleAsk(event) {
+  const block = await event.getBlock();
+  const createdAt = new Date(block.timestamp * 1000);
+
   await createEvent(event, {
     price: event.args.price.toString(),
   });
@@ -126,6 +138,7 @@ export async function handleAsk(event) {
     exchangeAddress: event.address,
     quoteToken: QUOTE_ADDRESSES[event.address],
     onSale: true,
+    listedAt: createdAt,
   });
   await nft.save();
 }
@@ -140,6 +153,7 @@ export async function handleCancelSellToken(event) {
     quoteToken: '',
     onSale: false,
     price: 0,
+    listedAt: null,
   });
   await nft.save();
 }

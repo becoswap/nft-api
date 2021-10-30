@@ -72,8 +72,21 @@ dataSources:
           handler: handleCancelBidToken
         - event: CancelSellToken
           handler: handleCancelSellToken
-
-  
-  
-
-          
+  - name: bid-kaba-planet
+    source:
+      address: "0x77b8677c48Ff208F42010a89A4451755756f8ae7"
+      startBlock: 5060217
+      abi: "./abis/bid.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Trade
+          handler: handleTrade
+        - event: Ask
+          handler: handleAsk
+        - event: Bid
+          handler: handleBid
+        - event: CancelBidToken
+          handler: handleCancelBidToken
+        - event: CancelSellToken
+          handler: handleCancelSellToken
