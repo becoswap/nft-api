@@ -9,7 +9,7 @@ const Collection = database.models.collection;
 
 const NFT_TYPE = 5;
 
-const BID_CONTRACTS = [];
+const BID_CONTRACTS = ['0x77b8677c48Ff208F42010a89A4451755756f8ae7'];
 
 function isBidContract(addr) {
   return BID_CONTRACTS.indexOf(addr) > -1;
@@ -94,8 +94,10 @@ export const handleCreate = async (e: Event) => {
   const x = nftId % WIDTH;
   const y = Math.floor(nftId / WIDTH);
   const width = WIDTH / 2;
-  const name = `PLANET (${x - width}, ${y - width})`;
-  const imageId = `${e.args.cardId}-${e.args.rarity}-${nftId}`;
+  const name = `PLANET (${x % 100}, ${Math.floor((x - width) / 100)}, ${Math.floor(
+    (y - width) / 100
+  )})`;
+  const imageId = `${e.args.cardId + 1}-${e.args.rarity}-${nftId}`;
 
   const dataToCreate = {
     id: getNftId(NFT_TYPE, nftId),
