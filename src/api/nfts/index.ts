@@ -145,9 +145,9 @@ async function list(ctx) {
 
     if (ALLOW_SORT_FIELDS.includes(ctx.query.orderBy)) {
       if (orderDirection == 'asc') {
-        innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" asc`);
+        innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" ASC NULLS LAST`);
       } else {
-        innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" desc`);
+        innerJoins.push(`ORDER BY nfts."${ctx.query.orderBy}" DESC NULLS LAST`);
       }
     }
   }
