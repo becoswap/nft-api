@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import { DB_TIMEOUT } from './constants';
 import applyExtraSetup from './extra-setup';
 
 // In a real app, you should keep the database connection URL as an environment variable.
@@ -9,7 +10,17 @@ var sequelize;
 const isProduction = process.env.NODE_ENV == 'production';
 
 if (process.env.POSTGRES_URI) {
-  sequelize = new Sequelize(process.env.POSTGRES_URI, { logging: !isProduction });
+  sequelize = new Sequelize(process.env.POSTGRES_URI, {
+    logging: !isProduction,
+    dialectOptions: {
+      requestTimeout: DB_TIMEOUT,
+    },
+    pool: {
+      max: 10,
+      min: 0,
+      idle: DB_TIMEOUT,
+    },
+  });
 } else {
   sequelize = new Sequelize('nfts', null, null, {
     dialect: 'postgres',
@@ -21,10 +32,13 @@ if (process.env.POSTGRES_URI) {
       ],
       write: { host: process.env.DB_WRITE, username: 'postgres', password: process.env.DB_PASS },
     },
+    dialectOptions: {
+      requestTimeout: DB_TIMEOUT,
+    },
     pool: {
       // If you want to override the options used for the read/write pool you can do so here
       max: 20,
-      idle: 30000,
+      idle: DB_TIMEOUT,
     },
     logging: !isProduction,
   });
@@ -40,6 +54,7 @@ const modelDefiners = [
   require('./models/bid'),
   require('./models/nft_property'),
   require('./models/collection'),
+  require('./models/message'),
 ];
 
 // We define all models according to their files.

@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
-import { KAI_RPC } from '../constants';
+import { RPC } from '../constants';
 
 const kaiWeb3 = new ethers.providers.JsonRpcProvider({
-  url: KAI_RPC,
-  timeout: 5000,
+  url: RPC,
+  timeout: 10000,
 });
 
 export { kaiWeb3 };

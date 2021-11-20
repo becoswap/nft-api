@@ -1,0 +1,25 @@
+dataSources:
+  - name: dpet-bsc
+    network: 56
+    source:
+      address: "0xea2e87ff1bc1e52b640452694e2f143f7f8d64be"
+      startBlock: 6926428
+      abi: "./abis/krc721.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Transfer
+          handler: handleTransfer
+  - name: dpet-kai
+    network: 1
+    source:
+      address: "0xc80ACe0aC969397F96a8E1c97D21B4759fAFeB1E"
+      startBlock: 1982127
+      abi: "./abis/krc721.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Transfer
+          handler: handleTransfer
+
+

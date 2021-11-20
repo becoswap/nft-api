@@ -7,6 +7,7 @@ import { saveTotalOwner } from '../../../utils/collection';
 const Property = database.models.nft_property;
 const NFT = database.models.nft;
 const Collection = database.models.collection;
+const Message = database.models.message;
 
 const bidContract = {
   '0x38375787094c984b0bf63b809F66E8C77988d1aB': true,
@@ -247,6 +248,11 @@ export const handleCreate = async event => {
   await col.save();
 
   await saveTotalOwner(NFT_TYPE);
+
+  await Message.create({
+    object_type: 1,
+    object_id: getNftId(NFT_TYPE, nftID),
+  });
 };
 
 async function updateProperty(nftId: string, name: string, attr: any) {
@@ -268,6 +274,11 @@ export const handleTransfer = async event => {
     await nft.save();
 
     await saveTotalOwner(NFT_TYPE);
+
+    await Message.create({
+      object_type: 1,
+      object_id: nftID,
+    });
   }
 };
 
@@ -294,4 +305,9 @@ async function _triggerCooldown(event, nftId: string) {
       where: { nftId: nftId, name: PROPERTY_KEY.COOLDOWN_END_BLOCK },
     }
   );
+
+  await Message.create({
+    object_type: 1,
+    object_id: nftId,
+  });
 }

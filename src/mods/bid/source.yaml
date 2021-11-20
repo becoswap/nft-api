@@ -1,5 +1,6 @@
 dataSources:
   - name: bid-artwork
+    network: 0
     source:
       address: "0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1"
       startBlock: 3560189
@@ -18,6 +19,7 @@ dataSources:
         - event: CancelSellToken
           handler: handleCancelSellToken
   - name: bid-kaba
+    network: 0
     source:
       address: "0xd504F8A8975527689E9c8727CA37a0FFCD1351cF"
       startBlock: 4352976
@@ -36,6 +38,7 @@ dataSources:
         - event: CancelSellToken
           handler: handleCancelSellToken
   - name: bid-kaba-with-kai
+    network: 0
     source:
       address: "0x936EC122D6F0e204aCA2E0eab2394d7305fbB6f8"
       startBlock: 4418753
@@ -55,6 +58,7 @@ dataSources:
           handler: handleCancelSellToken
 
   - name: bid-kaba-monster
+    network: 0
     source:
       address: "0x38375787094c984b0bf63b809F66E8C77988d1aB"
       startBlock: 4603537
@@ -73,9 +77,29 @@ dataSources:
         - event: CancelSellToken
           handler: handleCancelSellToken
   - name: bid-kaba-planet
+    network: 0
     source:
       address: "0x77b8677c48Ff208F42010a89A4451755756f8ae7"
       startBlock: 5060217
+      abi: "./abis/bid.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Trade
+          handler: handleTrade
+        - event: Ask
+          handler: handleAsk
+        - event: Bid
+          handler: handleBid
+        - event: CancelBidToken
+          handler: handleCancelBidToken
+        - event: CancelSellToken
+          handler: handleCancelSellToken
+  - name: bid-pet
+    network: 1
+    source:
+      address: "0x3CaAbcb82E81b8db291fE523dB458c963453Ea30"
+      startBlock: 4922606
       abi: "./abis/bid.json"
     mapping:
       file: "./mappings/index.ts"
