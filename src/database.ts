@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import { DB_TIMEOUT } from './constants';
+import { DB_NAME, DB_TIMEOUT } from './constants';
 import applyExtraSetup from './extra-setup';
 
 // In a real app, you should keep the database connection URL as an environment variable.
@@ -22,7 +22,7 @@ if (process.env.POSTGRES_URI) {
     },
   });
 } else {
-  sequelize = new Sequelize('nfts', null, null, {
+  sequelize = new Sequelize(DB_NAME, null, null, {
     dialect: 'postgres',
     port: 5432,
     replication: {
