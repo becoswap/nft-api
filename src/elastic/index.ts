@@ -25,7 +25,6 @@ async function runWorker() {
     order: [['id', 'ASC']],
   });
   if (msgs.length == 0) return false;
-
   let nfts = await NFT.findAll({
     where: {
       id: {
@@ -74,8 +73,12 @@ async function runWorker() {
 
 export const _startIndexEs = async () => {
   while (true) {
-    if (!(await runWorker())) {
-      await sleep(5000);
+    try {
+      if (!(await runWorker())) {
+        await sleep(5000);
+      }
+    } catch (e) {
+      console.error('run index es err: ', e.message);
     }
   }
 };

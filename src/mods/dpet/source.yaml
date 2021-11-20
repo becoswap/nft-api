@@ -11,7 +11,7 @@ dataSources:
         - event: Transfer
           handler: handleTransfer
   - name: dpet-kai
-    network: 11111
+    network: 1
     source:
       address: "0xc80ACe0aC969397F96a8E1c97D21B4759fAFeB1E"
       startBlock: 1982127

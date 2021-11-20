@@ -47,6 +47,7 @@ function startJob(module, dataSource) {
   }
   syncContractv2(dataSource.source.address, dataSource.source.startBlock, async (start, end) => {
     const events = await contract.queryFilter({}, start, end);
+
     for (var event of events) {
       const hanlderFn = handlers[eventHandlersMaps[event.event]];
 

@@ -96,7 +96,7 @@ dataSources:
         - event: CancelSellToken
           handler: handleCancelSellToken
   - name: bid-pet
-    network: 11111
+    network: 1
     source:
       address: "0x3CaAbcb82E81b8db291fE523dB458c963453Ea30"
       startBlock: 4922606
