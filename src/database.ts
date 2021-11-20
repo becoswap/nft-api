@@ -40,6 +40,7 @@ const modelDefiners = [
   require('./models/bid'),
   require('./models/nft_property'),
   require('./models/collection'),
+  require('./models/message'),
 ];
 
 // We define all models according to their files.

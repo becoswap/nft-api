@@ -6,6 +6,7 @@ import { getNftId } from '../../../utils/nft';
 const Property = database.models.nft_property;
 const NFT = database.models.nft;
 const Collection = database.models.collection;
+const Message = database.models.message;
 
 const NFT_TYPE = 5;
 
@@ -156,6 +157,11 @@ export const handleCreate = async (e: Event) => {
   col.totalItems += 1;
   await col.save();
   await saveTotalOwner(NFT_TYPE);
+
+  await Message.create({
+    object_type: 1,
+    object_id: dataToCreate.id,
+  });
 };
 
 export const handleTransfer = async event => {
@@ -167,5 +173,10 @@ export const handleTransfer = async event => {
     nft.setAttributes({ owner: event.args.to });
     await nft.save();
     await saveTotalOwner(NFT_TYPE);
+
+    await Message.create({
+      object_type: 1,
+      object_id: nftID,
+    });
   }
 };

@@ -1,5 +1,6 @@
 dataSources:
   - name: kaba
+    network: 0
     source:
       address: "0x8FC2Cc14A4a1fcf7dACf22A1Fa05f546213cBB19"
       startBlock: 4352786

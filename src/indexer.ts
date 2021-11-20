@@ -11,6 +11,8 @@ import sequelize from './database';
 import { syncContractv2 } from './utils/sync_contract';
 import { kaiWeb3 } from './utils/web3';
 import { syncLatestBlock } from './utils/blockNumber';
+import { CHAIN_ID } from './constants';
+import { startIndexEs } from './elastic';
 
 const getDirectories = source =>
   readdirSync(source, { withFileTypes: true })
@@ -32,6 +34,7 @@ async function assertDatabaseConnectionOk() {
 }
 
 function startJob(module, dataSource) {
+  console.log('module', module, 'network', dataSource.network, 'name', dataSource.name);
   const abi = fs.readFileSync(
     `./src/mods/${module}/` + dataSource.source.abi.replace('./', ''),
     'utf8'
@@ -57,12 +60,15 @@ function startJob(module, dataSource) {
 async function start() {
   await assertDatabaseConnectionOk();
   await syncLatestBlock();
+  await startIndexEs();
 
   for (var module of modules) {
     const file = fs.readFileSync(`./src/mods/${module}/source.yaml`, 'utf8');
     const sourceConfig = YAML.parse(file);
     for (const dataSource of sourceConfig.dataSources) {
-      startJob(module, dataSource);
+      if (dataSource.network == CHAIN_ID) {
+        startJob(module, dataSource);
+      }
     }
   }
 }

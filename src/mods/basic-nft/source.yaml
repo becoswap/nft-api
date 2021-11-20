@@ -1,5 +1,6 @@
 dataSources:
-  - name: kaba
+  - name: arwork
+    network: 0
     source:
       address: "0x33144EC3a462b944503549179e6635B2492061F6"
       startBlock: 3684937
