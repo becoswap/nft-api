@@ -11,6 +11,8 @@ import votes from './votes';
 import bids from './bids';
 import * as properties from './properties';
 import collection from './collections';
+import images from './images';
+
 
 const router = new Router();
 
@@ -52,5 +54,9 @@ router.get('/properties/stats', properties.stats);
 
 router.get('/collections/:id', collection.get);
 router.get('/collections', collection.list);
+
+
+router.get('/images/text/:text', images.text);
+
 
 module.exports = router;

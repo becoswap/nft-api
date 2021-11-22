@@ -90,3 +90,24 @@ dataSources:
           handler: handleCancelBidToken
         - event: CancelSellToken
           handler: handleCancelSellToken
+
+  - name: bid-kns
+    source:
+      address: "0x7b38965EBD0E2AeD846FFF9B4147b806a7Ef9Ea9"
+      startBlock: 5440735
+      abi: "./abis/bid.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Trade
+          handler: handleTrade
+        - event: Ask
+          handler: handleAsk
+        - event: Bid
+          handler: handleBid
+        - event: CancelBidToken
+          handler: handleCancelBidToken
+        - event: CancelSellToken
+          handler: handleCancelSellToken
+
+          

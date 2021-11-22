@@ -23,10 +23,10 @@ const NFT_TYPES = {
   '0x33144EC3a462b944503549179e6635B2492061F6': 2,
 };
 
-async function useTokenMeta(nft, contractAddr, tokenId) {
+async function useTokenMeta(nft, contractAddr, tokenId, blockTag) {
   try {
     const contract = new ethers.Contract(contractAddr, erc721ABI, kaiWeb3);
-    const tokenURI = await contract.tokenURI(tokenId);
+    const tokenURI = await contract.tokenURI(tokenId, {blockTag});
     if (tokenURI && tokenURI.includes(ArtworkBaseURI)) {
       const artworkID = tokenURI.replace(ArtworkBaseURI, '');
       const artwork: any = await Artwork.findByPk(artworkID);
@@ -59,7 +59,7 @@ export const handleTransfer = async (event: Event) => {
 
   if (event.args._from == zeroAddr) {
     nftData.creator = event.args._to;
-    await useTokenMeta(nftData, event.address, event.args._tokenId.toNumber());
+    await useTokenMeta(nftData, event.address, event.args._tokenId.toNumber(), event.blockNumber);
   }
 
   const bidConfig = bid[event.args._to];
