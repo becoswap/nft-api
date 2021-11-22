@@ -131,7 +131,7 @@ export async function handleTransfer(e: Event) {
 
 }
 export async function handleRenew(e: Event) {
-    const tokenId = e.args.tokenId.toNumber();
+    const tokenId = e.args.tokenId.toString();
     const nftId = getNftId(COLLECTION_ID, tokenId);
     const nft = await NFT.findByPk(nftId, {
         include
