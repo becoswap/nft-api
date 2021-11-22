@@ -1,18 +1,17 @@
 import text2png from 'text2png'
-import fs from "fs"
+import sharp from "sharp"
 async function text(ctx) {
     const dataUri = await text2png(ctx.params.text, {
       color: "#f7f7f7",
+      font: '16px Lobster',
       textAlign: "center",
       backgroundColor: "#0c0c0c",
-      paddingTop: 100,
-      paddingBottom: 100,
-      paddingLeft: 10,
-      paddingRight: 10,
+      padding: 100,
     });
     ctx.type="image/png";
 
-    ctx.body = dataUri;
+    ctx.body = sharp(dataUri)
+    .resize(300, 300);
 }
 
 export default {

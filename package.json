@@ -54,6 +54,7 @@
     "pg": "^8.6.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.5",
+    "sharp": "^0.29.3",
     "sqlstring": "^2.3.2",
     "text-to-image": "^4.1.1",
     "text2png": "^2.3.0",

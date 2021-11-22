@@ -40,13 +40,13 @@ const QUOTE_ADDRESSES = {
 
 function getBidId(event) {
   const args = event.args;
-  const nftId = args.tokenId.toNumber();
+  const nftId = args.tokenId.toString();
   return md5([nftId, NFT_TYPES[event.address], args.bidder].join(''));
 }
 
 const upsertBid = async event => {
   const args = event.args;
-  const nftId = args.tokenId.toNumber();
+  const nftId = args.tokenId.toString();
   const id = getBidId(event);
   await Bid.upsert({
     id: id,
@@ -59,7 +59,7 @@ const upsertBid = async event => {
 
 const removeBid = async (event, buyer) => {
   const args = event.args;
-  const nftId = args.tokenId.toNumber();
+  const nftId = args.tokenId.toString();
   const id = md5([nftId, NFT_TYPES[event.address], buyer].join(''));
   await Bid.destroy({
     where: {
@@ -72,7 +72,7 @@ async function createEvent(event, metadata) {
   const tx = await event.getTransaction();
   const block = await event.getBlock();
   const createdAt = new Date(block.timestamp * 1000);
-  const nftID = getNftId(NFT_TYPES[event.address], event.args.tokenId.toNumber());
+  const nftID = getNftId(NFT_TYPES[event.address], event.args.tokenId.toString());
   await Event.create({
     txHash: event.transactionHash,
     nftId: nftID,
@@ -104,7 +104,7 @@ export async function handleTrade(event: Event) {
     fee: event.args.fee.toString(),
   });
 
-  const nftID = getNftId(NFT_TYPES[event.address], event.args.tokenId.toNumber());
+  const nftID = getNftId(NFT_TYPES[event.address], event.args.tokenId.toString());
   const nft = await loadNft(nftID);
   nft.setAttributes({
     owner: event.args.buyer,
@@ -134,7 +134,7 @@ export async function handleAsk(event) {
     price: event.args.price.toString(),
   });
 
-  const nftId = getNftId(NFT_TYPES[event.address], event.args.tokenId.toNumber());
+  const nftId = getNftId(NFT_TYPES[event.address], event.args.tokenId.toString());
   const nft = await loadNft(nftId);
   nft.setAttributes({
     price: event.args.price.toString(),
@@ -149,7 +149,7 @@ export async function handleAsk(event) {
 export async function handleCancelSellToken(event) {
   await createEvent(event, {});
 
-  const nftId = getNftId(NFT_TYPES[event.address], event.args.tokenId.toNumber());
+  const nftId = getNftId(NFT_TYPES[event.address], event.args.tokenId.toString());
   const nft = await loadNft(nftId);
   nft.setAttributes({
     exchangeAddress: '',
@@ -167,7 +167,7 @@ export async function handleBid(event) {
     price: event.args.price.toString(),
   });
 
-  const nftId = getNftId(NFT_TYPES[event.address], event.args.tokenId.toNumber());
+  const nftId = getNftId(NFT_TYPES[event.address], event.args.tokenId.toString());
   const nft = await loadNft(nftId);
   nft.setAttributes({
     auctionPrice: event.args.price.toString(),
