@@ -22,7 +22,7 @@ module.exports = sequelize => {
       },
       nftId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
       creator: {
         allowNull: true,
