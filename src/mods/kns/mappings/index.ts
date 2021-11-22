@@ -110,7 +110,8 @@ export async function handleTransfer(e: Event) {
             properties: [
                 {
                     name: "expires_at",
-                    value: domain.expiresAt.toString()
+                    intValue: domain.expiresAt.toNumber(),
+                    type: "stats"
                 }
             ]
         }
@@ -140,7 +141,8 @@ export async function handleRenew(e: Event) {
     nft.properties = [
         {
             name: "expires_at",
-            value: e.args.expiresAt.toString()
+            intValue: e.args.expiresAt.toNumber(),
+            type: "stats"
         }
     ]
 
