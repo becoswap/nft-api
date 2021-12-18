@@ -1,4 +1,5 @@
 import { Event } from '@ethersproject/contracts';
+import { ethers } from 'ethers';
 import database from '../../../database';
 import { saveTotalOwner } from '../../../utils/collection';
 import { getNftId } from '../../../utils/nft';
@@ -189,12 +190,12 @@ const handleUpdateGem = async (e: Event) => {
       nftId: nftId,
       name: PROPERTY_KEY.GEM,
       type: PROPERTY_TYPE.LEVEL,
-      intValue: e.args.reserves.availableGem,
-      maxValue: e.args.reserves.gem,
+      intValue: ethers.utils.formatEther(e.args.reserves.availableGem),
+      maxValue: ethers.utils.formatEther(e.args.reserves.gem),
     });
   } else {
-    property.intValue = e.args.reserves.availableGem;
-    property.maxValue = e.args.reserves.gem;
+    property.intValue = ethers.utils.formatEther(e.args.reserves.availableGem);
+    property.maxValue = ethers.utils.formatEther(e.args.reserves.gem);
     await property.save();
   }
 };
@@ -211,12 +212,12 @@ const handleUpdateKaba = async (e: Event) => {
       nftId: nftId,
       name: PROPERTY_KEY.KABA,
       type: PROPERTY_TYPE.LEVEL,
-      intValue: e.args.reserves.availableKaba,
-      maxValue: e.args.reserves.kaba,
+      intValue: ethers.utils.formatEther(e.args.reserves.availableKaba),
+      maxValue: ethers.utils.formatEther(e.args.reserves.kaba),
     });
   } else {
-    property.intValue = e.args.reserves.availableKaba;
-    property.maxValue = e.args.reserves.kaba;
+    property.intValue = ethers.utils.formatEther(e.args.reserves.availableKaba);
+    property.maxValue = ethers.utils.formatEther(e.args.reserves.kaba);
     await property.save();
   }
 };

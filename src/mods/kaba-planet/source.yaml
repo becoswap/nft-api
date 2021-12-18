@@ -15,7 +15,7 @@ dataSources:
     source:
       address: "0x8a509C632182F578D25190A1871c040F298d0198"
       startBlock: 5568958
-      abi: "./abis/core.json"
+      abi: "./abis/metadata.json"
     mapping:
       file: "./mappings/index.ts"
       eventHandlers: 
