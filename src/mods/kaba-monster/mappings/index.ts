@@ -103,6 +103,12 @@ function getInfo(event) {
       maxValue: 22,
     },
     {
+      type: 'level',
+      name: 'level',
+      intValue: 0,
+      maxValue: 10,
+    },
+    {
       type: 'stats',
       name: 'strength',
       intValue: genes.strength,
