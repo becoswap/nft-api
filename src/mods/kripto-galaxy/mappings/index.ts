@@ -3,6 +3,7 @@ import { getNftId } from '../../../utils/nft';
 import { decode } from '../../../utils/genes';
 import BigNumber from 'bignumber.js';
 import { saveTotalOwner } from '../../../utils/collection';
+import { Event } from 'ethers';
 
 const Property = database.models.nft_property;
 const NFT = database.models.nft;
@@ -37,6 +38,7 @@ const PROPERTY_KEY = {
   COOLDOWNINDEX: 'cooldownIndex',
   COOLDOWN_END_BLOCK: 'cooldownEndBlock',
   SIRING_WITH_ID: 'siringWithId',
+  LEVEL: 'level',
 };
 
 const PROPERTY_TYPE = {
@@ -288,3 +290,24 @@ async function _triggerCooldown(event, nftId: string) {
     }
   );
 }
+
+export const handleLevelUp = async (e: Event) => {
+  const nftId = getNftId(NFT_TYPE, e.args._tokenId.toString());
+
+  let property = await Property.findOne({
+    where: { nftId: nftId, name: PROPERTY_KEY.LEVEL },
+  });
+
+  if (!property) {
+    return await Property.create({
+      nftId: nftId,
+      name: PROPERTY_KEY.LEVEL,
+      type: PROPERTY_TYPE.LEVEL,
+      intValue: e.args._levelTo,
+      maxValue: 10,
+    });
+  } else {
+    property.intValue = e.args._levelTo;
+    await property.save();
+  }
+};

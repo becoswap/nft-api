@@ -1,4 +1,5 @@
 import { Event } from '@ethersproject/contracts';
+import { ethers } from 'ethers';
 import database from '../../../database';
 import { saveTotalOwner } from '../../../utils/collection';
 import { getNftId } from '../../../utils/nft';
@@ -21,6 +22,8 @@ const PROPERTY_KEY = {
   CARD: 'card',
   PLANET_X: 'planet_x',
   PLANET_Y: 'planet_y',
+  GEM: 'gem',
+  KABA: 'kaba',
 };
 
 const PROPERTY_TYPE = {
@@ -167,5 +170,54 @@ export const handleTransfer = async event => {
     nft.setAttributes({ owner: event.args.to });
     await nft.save();
     await saveTotalOwner(NFT_TYPE);
+  }
+};
+
+export const handleUpdateMetadata = async (e: Event) => {
+  await handleUpdateGem(e);
+  await handleUpdateKaba(e);
+};
+
+const handleUpdateGem = async (e: Event) => {
+  const nftId = getNftId(NFT_TYPE, e.args._tokenId.toString());
+
+  let property = await Property.findOne({
+    where: { nftId: nftId, name: PROPERTY_KEY.GEM },
+  });
+
+  if (!property) {
+    return await Property.create({
+      nftId: nftId,
+      name: PROPERTY_KEY.GEM,
+      type: PROPERTY_TYPE.LEVEL,
+      intValue: ethers.utils.formatEther(e.args.reserves.availableGem),
+      maxValue: ethers.utils.formatEther(e.args.reserves.gem),
+    });
+  } else {
+    property.intValue = ethers.utils.formatEther(e.args.reserves.availableGem);
+    property.maxValue = ethers.utils.formatEther(e.args.reserves.gem);
+    await property.save();
+  }
+};
+
+const handleUpdateKaba = async (e: Event) => {
+  const nftId = getNftId(NFT_TYPE, e.args._tokenId.toString());
+
+  let property = await Property.findOne({
+    where: { nftId: nftId, name: PROPERTY_KEY.KABA },
+  });
+
+  if (!property) {
+    return await Property.create({
+      nftId: nftId,
+      name: PROPERTY_KEY.KABA,
+      type: PROPERTY_TYPE.LEVEL,
+      intValue: ethers.utils.formatEther(e.args.reserves.availableKaba),
+      maxValue: ethers.utils.formatEther(e.args.reserves.kaba),
+    });
+  } else {
+    property.intValue = ethers.utils.formatEther(e.args.reserves.availableKaba);
+    property.maxValue = ethers.utils.formatEther(e.args.reserves.kaba);
+    await property.save();
   }
 };
