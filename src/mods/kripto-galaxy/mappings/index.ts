@@ -283,7 +283,7 @@ async function _triggerCooldown(event, nftId: string) {
     where: { nftId: nftId, name: PROPERTY_KEY.COOLDOWNINDEX },
   });
   const cooldownIndexValue = Number(cooldownIndex.intValue);
-  const cooldownEndBlock = Math.floor(cooldownIndexValue / 5) + event.blockNumber;
+  const cooldownEndBlock = Math.floor(cooldowns[cooldownIndexValue] / 5) + event.blockNumber;
   if (cooldownIndexValue < 13) {
     cooldownIndex.intValue = cooldownIndexValue + 1;
     await cooldownIndex.save();
