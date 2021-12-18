@@ -198,9 +198,9 @@ export const handleCreate = async event => {
         nftId: getNftId(NFT_TYPE, sireId),
       },
     });
-    generation = matronGeneration.intValue;
-    if (generation < sireGeneration.intValue) {
-      generation = sireGeneration.intValue;
+    generation = Number(matronGeneration.intValue);
+    if (generation < Number(sireGeneration.intValue)) {
+      generation = Number(sireGeneration.intValue);
     }
     generation++;
     cooldownIndex = Math.floor(generation / 2);
@@ -290,9 +290,10 @@ async function _triggerCooldown(event, nftId: string) {
   let cooldownIndex = await Property.findOne({
     where: { nftId: nftId, name: PROPERTY_KEY.COOLDOWNINDEX },
   });
-  const cooldownEndBlock = Math.floor(cooldowns[cooldownIndex.intValue] / 5) + event.blockNumber;
-  if (cooldownIndex.intValue < 13) {
-    cooldownIndex.intValue += 1;
+  const cooldownIndexValue = cooldownIndex.intValue;
+  const cooldownEndBlock = Math.floor(cooldowns[cooldownIndexValue] / 5) + event.blockNumber;
+  if (cooldownIndexValue < 13) {
+    cooldownIndex.intValue = cooldownIndexValue + 1;
     await cooldownIndex.save();
   }
 
