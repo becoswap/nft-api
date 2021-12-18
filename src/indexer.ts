@@ -42,16 +42,22 @@ function startJob(module, dataSource) {
   for (var handler of dataSource.mapping.eventHandlers) {
     eventHandlersMaps[handler.event] = handler.handler;
   }
-  syncContractv2(dataSource.source.address, dataSource.source.startBlock, async (start, end) => {
-    const events = await contract.queryFilter({}, start, end);
-    for (var event of events) {
-      const hanlderFn = handlers[eventHandlersMaps[event.event]];
+  syncContractv2(
+    dataSource.source.address,
+    dataSource.source.startBlock,
+    async (start, end) => {
+      return await contract.queryFilter({}, start, end);
+    },
+    async events => {
+      for (var event of events) {
+        const hanlderFn = handlers[eventHandlersMaps[event.event]];
 
-      if (hanlderFn) {
-        await handlers[eventHandlersMaps[event.event]](event);
+        if (hanlderFn) {
+          await handlers[eventHandlersMaps[event.event]](event);
+        }
       }
     }
-  });
+  );
 }
 
 async function start() {

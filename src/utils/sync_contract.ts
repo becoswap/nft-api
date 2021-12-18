@@ -7,7 +7,12 @@ const SyncStatus = database.models.sync_status;
 
 const SYNC_MAX_BLOCK = 200;
 
-export const syncContractv2 = async (contractAddress: string, _startBlock: number, handler) => {
+export const syncContractv2 = async (
+  contractAddress: string,
+  _startBlock: number,
+  getEventFn,
+  handler
+) => {
   const syncStatuses = await SyncStatus.findOrCreate({
     where: { id: contractAddress },
     defaults: { lastBlock: _startBlock - 1 },
@@ -29,9 +34,11 @@ export const syncContractv2 = async (contractAddress: string, _startBlock: numbe
       } else {
         endBlock = lastestBlock;
       }
-
+      const events = await getEventFn(startBlock, endBlock);
       await database.transaction(async () => {
-        await handler(startBlock, endBlock);
+        if (events.length > 0) {
+          await handler(events);
+        }
         syncStatus.set('lastBlock', endBlock);
         await syncStatus.save();
       });
