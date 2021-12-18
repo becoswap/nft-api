@@ -46,7 +46,7 @@ export const syncContractv2 = async (
     } catch (e) {
       const d = new Date();
       console.error(d.toString(), ': sync contract ' + contractAddress + ' err: ', e.message);
-      await sleep(60000);
+      await sleep(10000);
     }
   }
 };
