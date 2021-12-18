@@ -89,7 +89,12 @@ function getRobotInfo(event) {
       name: 'siringWithId',
       intValue: 0,
     },
-
+    {
+      type: 'level',
+      name: 'level',
+      intValue: 0,
+      maxValue: 10,
+    },
     {
       type: 'stats',
       name: 'energy',
