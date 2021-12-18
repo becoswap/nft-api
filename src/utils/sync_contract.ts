@@ -5,7 +5,7 @@ import { getLatestBlock } from './blockNumber';
 
 const SyncStatus = database.models.sync_status;
 
-const SYNC_MAX_BLOCK = 500;
+const SYNC_MAX_BLOCK = 200;
 
 export const syncContractv2 = async (contractAddress: string, _startBlock: number, handler) => {
   const syncStatuses = await SyncStatus.findOrCreate({
