@@ -1,5 +1,5 @@
 dataSources:
-  - name: kaba
+  - name: kaba-planet
     source:
       address: "0x4af4ab01fC8BB6452dAc640d3F78745C49F0Ca38"
       startBlock: 5060118
@@ -11,3 +11,14 @@ dataSources:
           handler: handleCreate
         - event: Transfer
           handler: handleTransfer
+  - name: kaba-planet-meta
+    source:
+      address: "0x8a509C632182F578D25190A1871c040F298d0198"
+      startBlock: 5568958
+      abi: "./abis/core.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: UpdateMetadata
+          handler: handleUpdateMetadata
+
