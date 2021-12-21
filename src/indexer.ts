@@ -31,6 +31,13 @@ async function assertDatabaseConnectionOk() {
   }
 }
 
+function getAbi(module, dataSource) {
+  return fs.readFileSync(
+    `./src/mods/${module}/` + dataSource.source.abi.replace('./', ''),
+    'utf8'
+  );
+}
+
 function startJob(module, dataSource) {
   const abi = fs.readFileSync(
     `./src/mods/${module}/` + dataSource.source.abi.replace('./', ''),
@@ -58,13 +65,50 @@ async function start() {
   await assertDatabaseConnectionOk();
   await syncLatestBlock();
 
+  let handlers = {};
+  let firstBlock = 0;
   for (var module of modules) {
     const file = fs.readFileSync(`./src/mods/${module}/source.yaml`, 'utf8');
     const sourceConfig = YAML.parse(file);
     for (const dataSource of sourceConfig.dataSources) {
-      startJob(module, dataSource);
+      const abi = getAbi(module, dataSource);
+      handlers[dataSource.source.address] = {}
+      firstBlock = dataSource.source.startBlock;
+      let mapping = require(`./mods/${module}/` + dataSource.mapping.file.replace('./', ''));
+      for(let h of dataSource.mapping.eventHandlers) {
+        let iface = new ethers.utils.Interface(abi);
+        let topic = iface.getEventTopic(h.event);
+        handlers[dataSource.source.address][topic] = (log) => {
+          const args = iface.decodeEventLog(h.event, log.data, log.topics);
+          const e = {
+            args,
+            blockNumber: log.blockNumber,
+            blockHash: log.blockHash,
+            address: log.address,
+            event: h.event,
+            transactionHash: log.transactionHash,
+          }
+          return mapping[h.handler](e);
+        }
+      } 
     }
   }
+
+
+  //
+ while (true) {
+  const logs = await kaiWeb3.getLogs({
+    fromBlock: firstBlock,
+    toBlock: firstBlock + 10,
+  });
+  firstBlock += 10;
+  console.log(firstBlock, logs.length)
+  for (var log of logs) {
+    if (handlers[log.address] && handlers[log.address][log.topics[0]]) {
+      handlers[log.address][log.topics[0]](log);
+    }
+  }
+ }
 }
 
 start();
