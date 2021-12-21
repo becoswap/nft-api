@@ -11,7 +11,7 @@ const isProduction = process.env.NODE_ENV == 'production';
 if (process.env.POSTGRES_URI) {
   sequelize = new Sequelize(process.env.POSTGRES_URI, { logging: !isProduction });
 } else {
-  sequelize = new Sequelize('nfts', null, null, {
+  sequelize = new Sequelize(process.env.DB, null, null, {
     dialect: 'postgres',
     port: 5432,
     replication: {

@@ -1,5 +1,5 @@
 dataSources:
-  - name: kaba
+  - name: kaba-monster
     source:
       address: "0xc66BA8C9E149B5d3977Dfa73cE8DDEDEB90C28aA"
       startBlock: 4601955
@@ -13,3 +13,13 @@ dataSources:
           handler: handleCreate
         - event: Transfer
           handler: handleTransfer
+  - name: kaba-monster-meta
+    source:
+      address: "0xe3ddBc68d3A08a2ec8dFCaFF30b9b169CEbED3F5"
+      startBlock: 5568960
+      abi: "./abis/metadata.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: LevelUp
+          handler: handleLevelUp

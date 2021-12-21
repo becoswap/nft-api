@@ -3,6 +3,7 @@ import { getNftId } from '../../../utils/nft';
 import { decode } from './genes';
 import BigNumber from 'bignumber.js';
 import { saveTotalOwner } from '../../../utils/collection';
+import { Event } from 'ethers';
 
 const Property = database.models.nft_property;
 const NFT = database.models.nft;
@@ -36,6 +37,7 @@ const PROPERTY_KEY = {
   COOLDOWNINDEX: 'cooldownIndex',
   COOLDOWN_END_BLOCK: 'cooldownEndBlock',
   SIRING_WITH_ID: 'siringWithId',
+  LEVEL: 'level',
 };
 
 const PROPERTY_TYPE = {
@@ -99,6 +101,12 @@ function getInfo(event) {
       name: 'speed',
       intValue: genes.speed,
       maxValue: 22,
+    },
+    {
+      type: 'level',
+      name: 'level',
+      intValue: 0,
+      maxValue: 10,
     },
     {
       type: 'stats',
@@ -190,9 +198,9 @@ export const handleCreate = async event => {
         nftId: getNftId(NFT_TYPE, sireId),
       },
     });
-    generation = matronGeneration.intValue;
-    if (generation < sireGeneration.intValue) {
-      generation = sireGeneration.intValue;
+    generation = Number(matronGeneration.intValue);
+    if (generation < Number(sireGeneration.intValue)) {
+      generation = Number(sireGeneration.intValue);
     }
     generation++;
     cooldownIndex = Math.floor(generation / 2);
@@ -282,9 +290,10 @@ async function _triggerCooldown(event, nftId: string) {
   let cooldownIndex = await Property.findOne({
     where: { nftId: nftId, name: PROPERTY_KEY.COOLDOWNINDEX },
   });
-  const cooldownEndBlock = Math.floor(cooldowns[cooldownIndex.intValue] / 5) + event.blockNumber;
-  if (cooldownIndex.intValue < 13) {
-    cooldownIndex.intValue += 1;
+  const cooldownIndexValue = Number(cooldownIndex.intValue);
+  const cooldownEndBlock = Math.floor(cooldowns[cooldownIndexValue] / 5) + event.blockNumber;
+  if (cooldownIndexValue < 13) {
+    cooldownIndex.intValue = cooldownIndexValue + 1;
     await cooldownIndex.save();
   }
 
@@ -295,3 +304,24 @@ async function _triggerCooldown(event, nftId: string) {
     }
   );
 }
+
+export const handleLevelUp = async (e: Event) => {
+  const nftId = getNftId(NFT_TYPE, e.args._tokenId.toString());
+
+  let property = await Property.findOne({
+    where: { nftId: nftId, name: PROPERTY_KEY.LEVEL },
+  });
+
+  if (!property) {
+    return await Property.create({
+      nftId: nftId,
+      name: PROPERTY_KEY.LEVEL,
+      type: PROPERTY_TYPE.LEVEL,
+      intValue: e.args._levelTo,
+      maxValue: 10,
+    });
+  } else {
+    property.intValue = e.args._levelTo;
+    await property.save();
+  }
+};
