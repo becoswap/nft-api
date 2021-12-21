@@ -37,7 +37,7 @@ function getAbi(module, dataSource) {
 }
 
 const SyncStatus = database.models.sync_status;
-const SYNC_MAX_BLOCK = 100;
+const SYNC_MAX_BLOCK = 1000;
 async function start() {
   await assertDatabaseConnectionOk();
   await syncLatestBlock();
