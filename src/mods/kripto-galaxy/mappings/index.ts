@@ -176,7 +176,6 @@ export const handleCreate = async event => {
   const sireId = event.args.sireId.toString();
   var generation = 0;
   var cooldownIndex = 0;
-
   if (matronId != '0') {
     const matronGeneration = await Property.findOne({
       where: {

@@ -3,6 +3,7 @@ import { getNftId } from '../../../utils/nft';
 import md5 from 'blueimp-md5';
 import BigNumber from 'bignumber.js';
 import { Event } from '@ethersproject/contracts';
+import { getBlock } from '../../../utils/web3';
 
 const Event = database.models.event;
 const Nft = database.models.nft;
@@ -15,7 +16,7 @@ const bidType = {
   kabaKai: '0x936EC122D6F0e204aCA2E0eab2394d7305fbB6f8',
   kabaMonster: '0x38375787094c984b0bf63b809F66E8C77988d1aB',
   kabaPlanet: '0x77b8677c48Ff208F42010a89A4451755756f8ae7',
-  kns: "0x7b38965EBD0E2AeD846FFF9B4147b806a7Ef9Ea9"
+  kns: '0x7b38965EBD0E2AeD846FFF9B4147b806a7Ef9Ea9',
 };
 
 const beco = '0x2Eddba8b949048861d2272068A94792275A51658';
@@ -26,7 +27,7 @@ const NFT_TYPES = {
   [bidType.kabaKai]: 3,
   [bidType.kabaMonster]: 4,
   [bidType.kabaPlanet]: 5,
-  [bidType.kns]: 6
+  [bidType.kns]: 6,
 };
 
 const QUOTE_ADDRESSES = {
@@ -35,7 +36,7 @@ const QUOTE_ADDRESSES = {
   [bidType.kabaKai]: '',
   [bidType.kabaMonster]: '',
   [bidType.kabaPlanet]: '',
-  [bidType.kns]: ""
+  [bidType.kns]: '',
 };
 
 function getBidId(event) {
@@ -70,7 +71,7 @@ const removeBid = async (event, buyer) => {
 
 async function createEvent(event, metadata) {
   const tx = await event.getTransaction();
-  const block = await event.getBlock();
+  const block = await getBlock(event.blockNumber);
   const createdAt = new Date(block.timestamp * 1000);
   const nftID = getNftId(NFT_TYPES[event.address], event.args.tokenId.toString());
   await Event.create({
@@ -94,7 +95,7 @@ const loadNft = async (id: string) => {
 };
 
 export async function handleTrade(event: Event) {
-  const block = await event.getBlock();
+  const block = await getBlock(event.blockNumber);
   const createdAt = new Date(block.timestamp * 1000);
 
   await createEvent(event, {
@@ -127,7 +128,7 @@ export async function handleTrade(event: Event) {
 }
 
 export async function handleAsk(event) {
-  const block = await event.getBlock();
+  const block = await getBlock(event.blockNumber);
   const createdAt = new Date(block.timestamp * 1000);
 
   await createEvent(event, {
