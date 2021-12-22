@@ -52,7 +52,9 @@ async function start() {
     for (const dataSource of sourceConfig.dataSources) {
       const abi = getAbi(module, dataSource);
       handlers[dataSource.source.address] = {};
-      firstBlock = dataSource.source.startBlock;
+      if (dataSource.source.startBlock < firstBlock ||  firstBlock === 0) {
+        firstBlock = dataSource.source.startBlock;
+      }
       addreses.push(dataSource.source.address);
       let mapping = require(`./mods/${module}/` + dataSource.mapping.file.replace('./', ''));
       for (let h of dataSource.mapping.eventHandlers) {
@@ -77,7 +79,7 @@ async function start() {
       }
     }
   }
-
+  console.log(firstBlock)
   const syncStatuses = await SyncStatus.findOrCreate({
     where: { id: 'xx-1' },
     defaults: { lastBlock: firstBlock },
