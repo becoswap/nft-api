@@ -109,6 +109,7 @@ async function start() {
       });
 
       logs = logs.filter(log => handlers[log.address] && handlers[log.address][log.topics[0]]);
+      console.log("Applying", "event", logs.length, "block", `[${startBlock}, ${endBlock}]`);
       await database.transaction(async () => {
         for (let log of logs) {
           await handlers[log.address][log.topics[0]](log);
