@@ -15,6 +15,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^7.16.0",
     "@graphql-tools/schema": "^8.2.0",
     "@koa/cors": "^3.1.0",
     "@koa/router": "^9.4.0",

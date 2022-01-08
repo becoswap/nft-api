@@ -13,7 +13,6 @@ import * as properties from './properties';
 import collection from './collections';
 import images from './images';
 
-
 const router = new Router();
 
 function authM() {
@@ -24,7 +23,8 @@ function authM() {
 }
 
 // NFTS API -----------------------------
-router.get('/nfts', nfts.list);
+router.get('/v1/nfts', nfts.list);
+router.get('/nfts', nfts.listV2);
 router.get('/nfts/count', nfts.count);
 router.get('/nfts/:id', nfts.get);
 
@@ -55,8 +55,6 @@ router.get('/properties/stats', properties.stats);
 router.get('/collections/:id', collection.get);
 router.get('/collections', collection.list);
 
-
 router.get('/images/text/:text', images.text);
-
 
 module.exports = router;
