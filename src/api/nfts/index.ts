@@ -5,6 +5,7 @@ import { buildQuery } from '../../utils/query';
 import { DEFAULT_LIMIT, MAX_LIMIT } from '../../constants';
 import NodeCache from 'node-cache';
 import md5 from 'blueimp-md5';
+import { search } from '../../elastic';
 
 const NFT = database.models.nft;
 const User = database.models.user;
@@ -231,9 +232,32 @@ async function update(ctx) {
   ctx.body = nft;
 }
 
+async function listV2(ctx) {
+  if (ctx.query.onSale) {
+    ctx.query.onSale = ctx.query.onSale === '1' ? true : false;
+  }
+
+  try {
+    const data = await search(ctx.query);
+
+    ctx.status = 200;
+    ctx.body = {
+      count: data.hits.total.value,
+      rows: data.hits.hits.map(r => {
+        r = r._source;
+        r.properties = r.properties || [];
+        return r;
+      }),
+    };
+  } catch (e) {
+    ctx.status = 500;
+  }
+}
+
 export default {
   list,
   update,
   count,
   get,
+  listV2,
 };
