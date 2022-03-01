@@ -43,6 +43,8 @@ async function useTokenMeta(nft, contractAddr, tokenId, blockTag) {
           nft.fileUrl = artwork.fileUrl;
           nft.tokenUrl = tokenURI;
         }
+      } else {
+        nft.status = 1;
       }
     }
   } catch (err) {
