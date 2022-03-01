@@ -20,5 +20,3 @@ export const metadataQueueAdd = async (nftId) => {
     }
   );
 }
-
-metadataQueueAdd("7-1")

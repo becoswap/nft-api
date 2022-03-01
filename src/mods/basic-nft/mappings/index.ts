@@ -19,13 +19,13 @@ const bid = {
     quote: beco,
   },
   '0xc2317e78E920343741C5031245c20F44B2D4c2db': {
-    quote: ""
-  }
+    quote: '',
+  },
 };
 
 const NFT_TYPES = {
   '0x33144EC3a462b944503549179e6635B2492061F6': 2,
-  '0x5019DB2c6B2F31906a715d4Bbf100e40cB823eEb': 7
+  '0x5019DB2c6B2F31906a715d4Bbf100e40cB823eEb': 7,
 };
 async function useTokenMeta(nft, contractAddr, tokenId, blockTag) {
   try {
@@ -78,7 +78,11 @@ export const handleTransfer = async (event: Event) => {
   }
   const nft = await NFT.findByPk(nftData.id);
   if (!nft) {
-    return await NFT.create(nftData);
+    await NFT.create(nftData);
+    if (nftData.tokenUrl && nftData.tokenUrl.includes('ipfs://')) {
+      await metadataQueueAdd(nftData.id);
+    }
+    return;
   }
 
   let dataToUpdate: any = {
@@ -93,8 +97,4 @@ export const handleTransfer = async (event: Event) => {
 
   nft.setAttributes(dataToUpdate);
   await nft.save();
-
-  if (nft.tokenURI && nft.tokenURI.includes('ipfs://') && isMint) {
-    await metadataQueueAdd(nft.id);
-  }
 };
