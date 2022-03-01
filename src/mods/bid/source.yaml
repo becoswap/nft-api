@@ -111,7 +111,7 @@ dataSources:
           handler: handleCancelSellToken
   - name: bid-The-300-Club
     source:
-      address: "0xc2317e78E920343741C5031245c20F44B2D4c2db"
+      address: "0xF5678dF168ffc28B347d080e539d80a1506BC756"
       startBlock: 6977045
       abi: "./abis/bid.json"
     mapping:

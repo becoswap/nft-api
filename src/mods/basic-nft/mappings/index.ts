@@ -18,7 +18,7 @@ const bid = {
   '0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1': {
     quote: beco,
   },
-  '0xc2317e78E920343741C5031245c20F44B2D4c2db': {
+  '0xF5678dF168ffc28B347d080e539d80a1506BC756': {
     quote: '',
   },
 };
