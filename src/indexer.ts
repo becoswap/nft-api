@@ -41,18 +41,26 @@ const SYNC_MAX_BLOCK = 1000;
 async function start() {
   await assertDatabaseConnectionOk();
   await syncLatestBlock();
+  await _start();
+}
 
+async function _start() {
   let handlers = {};
   let firstBlock = 0;
   let topics = [];
   let addreses = [];
+  const idxAddr = process.env.INDEX_ADDR;
   for (var module of modules) {
     const file = fs.readFileSync(`./src/mods/${module}/source.yaml`, 'utf8');
     const sourceConfig = YAML.parse(file);
     for (const dataSource of sourceConfig.dataSources) {
+      if (idxAddr && idxAddr != dataSource.source.address) {
+        continue;
+      }
+
       const abi = getAbi(module, dataSource);
       handlers[dataSource.source.address] = {};
-      if (dataSource.source.startBlock < firstBlock ||  firstBlock === 0) {
+      if (dataSource.source.startBlock < firstBlock || firstBlock === 0) {
         firstBlock = dataSource.source.startBlock;
       }
       addreses.push(dataSource.source.address);
@@ -79,9 +87,11 @@ async function start() {
       }
     }
   }
-  console.log(firstBlock)
+
+  if (addreses.length == 0) return;
+
   const syncStatuses = await SyncStatus.findOrCreate({
-    where: { id: 'xx-1' },
+    where: { id: idxAddr ? idxAddr : 'xx-1' },
     defaults: { lastBlock: firstBlock },
   });
   const syncStatus: any = syncStatuses[0];
@@ -111,7 +121,7 @@ async function start() {
       });
 
       // logs = logs.filter(log => handlers[log.address] && handlers[log.address][log.topics[0]]);
-      console.log("Applying", "event", logs.length, "block", `[${startBlock}, ${endBlock}]`);
+      console.log('Applying', 'event', logs.length, 'block', `[${startBlock}, ${endBlock}]`);
       await database.transaction(async () => {
         for (let log of logs) {
           await handlers[log.address][log.topics[0]](log);

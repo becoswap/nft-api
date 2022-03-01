@@ -1,8 +1,19 @@
 dataSources:
-  - name: kaba
+  - name: art
     source:
       address: "0x33144EC3a462b944503549179e6635B2492061F6"
       startBlock: 3684937
+      abi: "./abis/erc721.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Transfer
+          handler: handleTransfer
+  
+  - name: The-300-Club
+    source:
+      address: "0x5019DB2c6B2F31906a715d4Bbf100e40cB823eEb"
+      startBlock: 6881538
       abi: "./abis/erc721.json"
     mapping:
       file: "./mappings/index.ts"

@@ -4,6 +4,7 @@ import erc721ABI from '../abis/erc721.json';
 import database from '../../../database';
 import { getNftId } from '../../../utils/nft';
 import { kaiWeb3 } from '../../../utils/web3';
+import { metadataQueueAdd } from '../../../jobqueue';
 
 const zeroAddr = '0x0000000000000000000000000000000000000000';
 const ArtworkBaseURI = 'https://api-nfts.becoswap.com/artworks/';
@@ -17,25 +18,31 @@ const bid = {
   '0x8b913D0828Fc1eFCaed8D6e1E5292D3A024A2Db1': {
     quote: beco,
   },
+  '0xc2317e78E920343741C5031245c20F44B2D4c2db': {
+    quote: ""
+  }
 };
 
 const NFT_TYPES = {
   '0x33144EC3a462b944503549179e6635B2492061F6': 2,
+  '0x5019DB2c6B2F31906a715d4Bbf100e40cB823eEb': 7
 };
-
 async function useTokenMeta(nft, contractAddr, tokenId, blockTag) {
   try {
     const contract = new ethers.Contract(contractAddr, erc721ABI, kaiWeb3);
-    const tokenURI = await contract.tokenURI(tokenId, {blockTag});
-    if (tokenURI && tokenURI.includes(ArtworkBaseURI)) {
-      const artworkID = tokenURI.replace(ArtworkBaseURI, '');
-      const artwork: any = await Artwork.findByPk(artworkID);
-      if (artwork) {
-        nft.name = artwork.name;
-        nft.description = artwork.description;
-        nft.attributes = artwork.meta;
-        nft.fileUrl = artwork.fileUrl;
-        nft.tokenUrl = tokenURI;
+    const tokenURI = await contract.tokenURI(tokenId, { blockTag });
+    if (tokenURI) {
+      nft.tokenUrl = tokenURI;
+      if (tokenURI.includes(ArtworkBaseURI)) {
+        const artworkID = tokenURI.replace(ArtworkBaseURI, '');
+        const artwork: any = await Artwork.findByPk(artworkID);
+        if (artwork) {
+          nft.name = artwork.name;
+          nft.description = artwork.description;
+          nft.attributes = artwork.meta;
+          nft.fileUrl = artwork.fileUrl;
+          nft.tokenUrl = tokenURI;
+        }
       }
     }
   } catch (err) {
@@ -56,8 +63,8 @@ export const handleTransfer = async (event: Event) => {
     onSale: false,
     votes: 0,
   };
-
-  if (event.args._from == zeroAddr) {
+  const isMint = event.args._from == zeroAddr;
+  if (isMint) {
     nftData.creator = event.args._to;
     await useTokenMeta(nftData, event.address, event.args._tokenId.toNumber(), event.blockNumber);
   }
@@ -86,4 +93,8 @@ export const handleTransfer = async (event: Event) => {
 
   nft.setAttributes(dataToUpdate);
   await nft.save();
+
+  if (nft.tokenURI && nft.tokenURI.includes('ipfs://') && isMint) {
+    await metadataQueueAdd(nft.id);
+  }
 };

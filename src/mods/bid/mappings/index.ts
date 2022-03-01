@@ -17,6 +17,7 @@ const bidType = {
   kabaMonster: '0x38375787094c984b0bf63b809F66E8C77988d1aB',
   kabaPlanet: '0x77b8677c48Ff208F42010a89A4451755756f8ae7',
   kns: '0x7b38965EBD0E2AeD846FFF9B4147b806a7Ef9Ea9',
+  the300: "0xc2317e78E920343741C5031245c20F44B2D4c2db"
 };
 
 const beco = '0x2Eddba8b949048861d2272068A94792275A51658';
@@ -28,6 +29,7 @@ const NFT_TYPES = {
   [bidType.kabaMonster]: 4,
   [bidType.kabaPlanet]: 5,
   [bidType.kns]: 6,
+  [bidType.the300]: 7
 };
 
 const QUOTE_ADDRESSES = {
@@ -37,6 +39,7 @@ const QUOTE_ADDRESSES = {
   [bidType.kabaMonster]: '',
   [bidType.kabaPlanet]: '',
   [bidType.kns]: '',
+  [bidType.the300]: ''
 };
 
 function getBidId(event) {

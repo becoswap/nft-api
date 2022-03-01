@@ -109,5 +109,24 @@ dataSources:
           handler: handleCancelBidToken
         - event: CancelSellToken
           handler: handleCancelSellToken
-
+  - name: bid-The-300-Club
+    source:
+      address: "0xc2317e78E920343741C5031245c20F44B2D4c2db"
+      startBlock: 6977045
+      abi: "./abis/bid.json"
+    mapping:
+      file: "./mappings/index.ts"
+      eventHandlers: 
+        - event: Trade
+          handler: handleTrade
+        - event: Ask
+          handler: handleAsk
+        - event: Bid
+          handler: handleBid
+        - event: CancelBidToken
+          handler: handleCancelBidToken
+        - event: CancelSellToken
+          handler: handleCancelSellToken
           
+
+          0xc2317e78E920343741C5031245c20F44B2D4c2db
