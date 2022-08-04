@@ -5,7 +5,7 @@ dataSources:
       startBlock: 5060118
       abi: "./abis/core.json"
     mapping:
-      file: "./mappings/index.ts"
+      file: "./mappings/index"
       eventHandlers: 
         - event: Created
           handler: handleCreate
@@ -17,7 +17,7 @@ dataSources:
       startBlock: 5568958
       abi: "./abis/metadata.json"
     mapping:
-      file: "./mappings/index.ts"
+      file: "./mappings/index"
       eventHandlers: 
         - event: UpdateMetadata
           handler: handleUpdateMetadata

@@ -18,7 +18,7 @@ const getDirectories = source =>
     .filter(dirent => dirent.isDirectory())
     .map(dirent => dirent.name);
 
-const modules = getDirectories('./src/mods');
+const modules = getDirectories(__dirname  +'/mods');
 
 async function assertDatabaseConnectionOk() {
   console.log(`Checking database connection...`);
@@ -33,7 +33,7 @@ async function assertDatabaseConnectionOk() {
 }
 
 function getAbi(module, dataSource) {
-  return fs.readFileSync(`./src/mods/${module}/` + dataSource.source.abi.replace('./', ''), 'utf8');
+  return fs.readFileSync(__dirname+`/mods/${module}/` + dataSource.source.abi.replace('./', ''), 'utf8');
 }
 
 const SyncStatus = database.models.sync_status;
@@ -51,7 +51,7 @@ async function _start() {
   let addreses = [];
   const idxAddr = process.env.INDEX_ADDR;
   for (var module of modules) {
-    const file = fs.readFileSync(`./src/mods/${module}/source.yaml`, 'utf8');
+    const file = fs.readFileSync(__dirname + `/mods/${module}/source.yaml`, 'utf8');
     const sourceConfig = YAML.parse(file);
     for (const dataSource of sourceConfig.dataSources) {
       if (idxAddr && idxAddr != dataSource.source.address) {

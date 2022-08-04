@@ -5,7 +5,7 @@ dataSources:
       startBlock: 3684937
       abi: "./abis/erc721.json"
     mapping:
-      file: "./mappings/index.ts"
+      file: "./mappings/index"
       eventHandlers: 
         - event: Transfer
           handler: handleTransfer
@@ -16,7 +16,7 @@ dataSources:
       startBlock: 6881538
       abi: "./abis/erc721.json"
     mapping:
-      file: "./mappings/index.ts"
+      file: "./mappings/index"
       eventHandlers: 
         - event: Transfer
           handler: handleTransfer

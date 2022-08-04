@@ -12,7 +12,9 @@
     "test": "nyc ava",
     "prettier:check": "prettier --check src/**/*",
     "prettier:fix": "prettier --write src/**/*",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "yarn clean && cp -R src dist && tsc",
+    "clean": "rm -rf ./dist"
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.16.0",
@@ -23,6 +25,7 @@
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
+    "ava": "^3.12.1",
     "aws-sdk": "^2.953.0",
     "axios": "^0.26.0",
     "bignumber.js": "^9.0.1",
@@ -30,6 +33,7 @@
     "bull": "^4.6.2",
     "cls-hooked": "^4.2.2",
     "date-fns": "^2.21.3",
+    "dotenv": "^10.0.0",
     "eth-multicall": "^1.3.13",
     "ethers": "^5.4.1",
     "express-graphql": "^0.12.0",
@@ -66,8 +70,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "ava": "^3.12.1",
-    "dotenv": "^10.0.0",
+    "copyfiles": "^2.4.1",
     "nodemon": "^2.0.6",
     "nyc": "^15.1.0",
     "prettier": "^2.3.2",

@@ -10,13 +10,7 @@
   
       "files": true,
   
-      "pretty": true,
-  
-      "compilerOptions": {
-        // compilerOptions specified here will override those declared below,
-        // but *only* in ts-node.  Useful if you want ts-node and tsc to use
-        // different options with a single tsconfig.json.
-      }
+      "pretty": true
     },
     "compilerOptions": {
       // typescript options here
@@ -26,6 +20,6 @@
       "checkJs": false,
       "resolveJsonModule": true,
   
-      "strict": false
+      "strict": false,
     }
 }

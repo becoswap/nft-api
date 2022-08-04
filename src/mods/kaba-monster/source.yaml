@@ -5,7 +5,7 @@ dataSources:
       startBlock: 4601955
       abi: "./abis/core.json"
     mapping:
-      file: "./mappings/index.ts"
+      file: "./mappings/index"
       eventHandlers: 
         - event: Pregnant
           handler: handlePregnant
@@ -19,7 +19,7 @@ dataSources:
       startBlock: 5568960
       abi: "./abis/metadata.json"
     mapping:
-      file: "./mappings/index.ts"
+      file: "./mappings/index"
       eventHandlers: 
         - event: LevelUp
           handler: handleLevelUp
